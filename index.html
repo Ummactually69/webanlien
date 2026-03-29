@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rung Chuông Vàng - Pro Edition</title>
+    
     <style>
         :root {
             --primary-gold: #FFD700;
@@ -27,248 +28,237 @@
 
         #game-container {
             background: rgba(255, 255, 255, 0.1);
-            padding: 2rem;
+            padding: 2.5rem;
             border-radius: 20px;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.18);
             width: 90%;
             max-width: 600px;
             text-align: center;
             position: relative;
-            transition: transform 0.1s;
         }
 
-        /* Hiệu ứng rung màn hình khi thua */
-        .shake {
-            animation: shake 0.5s screen;
+        /* Tiêu đề & Credit */
+        .title-group h1 {
+            color: var(--primary-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0px; 
+            font-size: 2.5rem;
+        }
+        .title-group h2 {
+            color: var(--error-red);
+            font-size: 1.4rem;
+            margin-top: 5px; 
+            margin-bottom: 30px;
+            font-style: italic;
         }
 
+        /* Nút bấm */
+        .btn {
+            background: transparent;
+            border: 2px solid var(--primary-gold);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 15px;
+            display: block;
+            text-decoration: none;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .btn:hover {
+            background: var(--primary-gold);
+            color: black;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-secret { border-color: #ff00ff; color: #ff00ff; }
+        .btn-secret:hover { background: #ff00ff !important; color: white !important; }
+
+        /* Màn hình */
+        .screen { display: none; flex-direction: column; animation: fadeIn 0.5s; }
+        .active-screen { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Animation Chuông Vàng */
+        .bell { font-size: 100px; filter: drop-shadow(0 0 10px var(--primary-gold)); margin-bottom: 20px; }
+        .ring-animation { animation: ring 0.8s infinite ease-in-out; }
+        @keyframes ring {
+            0%, 100% { transform: rotate(0); }
+            25% { transform: rotate(20deg); }
+            75% { transform: rotate(-20deg); }
+        }
+
+        /* HIỆU ỨNG CHUÔNG VỠ BẢN CŨ (ĐẸP) */
+        .break-animation {
+            animation: break 1.2s forwards cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            position: relative;
+        }
+        @keyframes break {
+            0% { transform: scale(1); opacity: 1; }
+            45% { transform: scale(1.2) rotate(5deg); filter: grayscale(0.5); }
+            50% { transform: scale(1.1) rotate(-5deg); filter: sepia(1) saturate(5); }
+            100% { transform: translateY(200px) rotate(45deg); opacity: 0; }
+        }
+
+        .shake { animation: shake 0.5s; }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-10px); }
             75% { transform: translateX(10px); }
         }
 
-        h1 {
-            color: var(--primary-gold);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
-        }
-
-        #question-counter {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-            color: var(--primary-gold);
-        }
-
-        #question-text {
-            font-size: 1.5rem;
-            margin-bottom: 30px;
-            min-height: 80px;
-        }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .option-btn {
-            background: transparent;
-            border: 2px solid var(--primary-gold);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-        }
-
-        .option-btn:hover {
-            background: var(--primary-gold);
-            color: black;
-            transform: translateY(-3px);
-        }
-
-        /* Màn hình kết quả */
-        .screen {
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.5s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .bell {
-            font-size: 100px;
-            filter: drop-shadow(0 0 10px var(--primary-gold));
-        }
-
-        /* Animation Chuông Vàng */
-        .ring-animation {
-            animation: ring 0.8s infinite ease-in-out;
-        }
-
-        @keyframes ring {
-            0% { transform: rotate(0); }
-            25% { transform: rotate(20deg); }
-            75% { transform: rotate(-20deg); }
-            100% { transform: rotate(0); }
-        }
-
-        /* Animation Chuông Vỡ */
-        .break-animation {
-            animation: break 1s forwards cubic-bezier(0.17, 0.67, 0.83, 0.67);
-            position: relative;
-        }
-
-        @keyframes break {
-            0% { transform: scale(1); opacity: 1; }
-            45% { transform: scale(1.2) rotate(5deg); filter: grayscale(0.5); }
-            50% { transform: scale(1.1) rotate(-5deg); filter: sepia(1) saturate(5); }
-            100% { transform: translateY(100px) rotate(45deg); opacity: 0; }
-        }
-
-        .status-text {
-            margin-top: 20px;
-            font-size: 2rem;
-            font-weight: bold;
-        }
-
-        .win-text { color: var(--primary-gold); }
-        .lose-text { color: var(--error-red); }
-
-        .hidden { display: none; }
+        #question-counter { color: var(--primary-gold); font-weight: bold; margin-bottom: 10px; }
+        #question-text { font-size: 1.4rem; min-height: 80px; margin-bottom: 25px; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <div id="quiz-part">
-        <h1>Rung Chuông Vàng</h1>
+    <div id="menu-screen" class="screen active-screen">
+        <div class="title-group">
+            <h1>Rung Chuông Vàng</h1>
+            <h2>Made by CMD34</h2>
+        </div>
+        <button class="btn" onclick="switchScreen('quiz-part')">BẮT ĐẦU CHƠI</button>
+        <button class="btn" onclick="switchScreen('settings-screen')">CÀI ĐẶT</button>
+        <button class="btn" onclick="switchScreen('credits-screen')">THÔNG TIN</button>
+    </div>
+
+    <div id="settings-screen" class="screen">
+        <h1>Cài Đặt</h1>
+        <p>Âm thanh: Không có sẵn</p>
+        <p>Độ khó: Trẻ em</p>
+        <button class="btn" onclick="switchScreen('menu-screen')">QUAY LẠI</button>
+    </div>
+
+    <div id="credits-screen" class="screen">
+        <h1>Thông Tin</h1>
+        <p>Phiên bản: Pro Edition v5.0</p>
+        <p>Coder: CMD34</p>
+        <button class="btn btn-secret" onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ&start_radio=1', '_blank')">
+            QUÀ TẶNG BÍ MẬT 🎁
+        </button>
+        <button class="btn" onclick="switchScreen('menu-screen')">QUAY LẠI</button>
+    </div>
+
+    <div id="quiz-part" class="screen">
         <div id="question-counter">Câu hỏi 1/4</div>
-        <div id="question-text">Đang tải câu hỏi...</div>
-        
+        <div id="question-text">Đang tải...</div>
         <div class="options-grid">
-            <button class="option-btn" onclick="checkAnswer(0)">A</button>
-            <button class="option-btn" onclick="checkAnswer(1)">B</button>
-            <button class="option-btn" onclick="checkAnswer(2)">C</button>
-            <button class="option-btn" onclick="checkAnswer(3)">D</button>
+            <button class="btn quiz-opt" onclick="checkAnswer(0)">A</button>
+            <button class="btn quiz-opt" onclick="checkAnswer(1)">B</button>
+            <button class="btn quiz-opt" onclick="checkAnswer(2)">C</button>
+            <button class="btn quiz-opt" onclick="checkAnswer(3)">D</button>
         </div>
     </div>
 
-    <!-- Màn hình Chiến thắng -->
     <div id="victory-screen" class="screen">
         <div class="bell ring-animation">🔔</div>
-        <div class="status-text win-text">BẠN ĐÃ RUNG CHUÔNG VÀNG!</div>
-        <button class="option-btn" style="margin-top: 30px;" onclick="resetGame()">Chơi lại</button>
+        <div style="color:var(--primary-gold); font-size: 1.5rem; font-weight: bold; margin-bottom: 20px;">BẠN ĐÃ RUNG CHUÔNG VÀNG!</div>
+        <button class="btn" onclick="resetGame()">CHƠI LẠI</button>
     </div>
 
-    <!-- Màn hình Thất bại -->
     <div id="failure-screen" class="screen">
         <div class="bell" id="broken-bell">🔔</div>
-        <div class="status-text lose-text">CHUÔNG ĐÃ VỠ!</div>
-        <p>Rất tiếc, bạn đã trả lời sai và phải rời sân.</p>
-        <button class="option-btn" style="margin-top: 30px; border-color: var(--error-red); color: white;" onclick="resetGame()">Thử lại</button>
+        <div style="color:var(--error-red); font-size: 1.5rem; font-weight: bold; margin-bottom: 10px;">CHUÔNG ĐÃ VỠ!</div>
+        <p style="margin-bottom: 20px;">Bạn đã trả lời sai rồi...</p>
+        <button class="btn" style="border-color: var(--error-red)" onclick="resetGame()">THỬ LẠI</button>
     </div>
 </div>
 
 <script>
     const questions = [
         {
-            q: "Câu đầu: Đâu là thủ đô của Việt Nam?",
+            q: "Đâu là thủ đô của Việt Nam?",
             options: ["Đà Nẵng", "Hà Nội", "TP. Hồ Chí Minh", "Hải Phòng"],
             correct: 1
         },
         {
-            q: "Câu giữa: Con gì béo nhất?",
+            q: "Con gì béo nhất trong các lựa chọn sau?",
             options: ["Con Hổ", "Con Voi", "Con Kiến", "Con mẹ mày béo"],
             correct: 3
         },
         {
-            q: "Câu cuối: Số nào tiếp theo trong dãy: 1, 2, 3, 4, 5, ...?",
+            q: "Số nào tiếp theo trong dãy: 1, 2, 3, 4, 5, ...?",
             options: ["6", "7", "8", "9"],
             correct: 0
         },
         {
             q: "Mục đích của sự sống là gì?",
-            options: ["Tôi hông biết", "Tại sao..", "Hả", "Gì cơ"],
-            correct: "ALWAYS_TRUE" // Logic đặc biệt: Chọn gì cũng đúng
+            options: ["Ăn và Ngủ", "Học tập", "Làm giàu", "Tất cả đều đúng"],
+            correct: "ALWAYS_TRUE"
         }
     ];
 
     let currentQuestion = 0;
 
+    function switchScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+        const target = document.getElementById(screenId);
+        target.style.display = 'flex';
+        target.classList.add('active-screen');
+
+        if(screenId === 'quiz-part') loadQuestion();
+    }
+
     function loadQuestion() {
         const qData = questions[currentQuestion];
         document.getElementById("question-counter").innerText = `Câu hỏi ${currentQuestion + 1}/${questions.length}`;
         document.getElementById("question-text").innerText = qData.q;
-        
-        const btns = document.querySelectorAll(".option-btn");
-        qData.options.forEach((opt, index) => {
-            if(index < 4) btns[index].innerText = opt;
-        });
+        const btns = document.querySelectorAll(".quiz-opt");
+        btns.forEach((btn, index) => btn.innerText = qData.options[index]);
     }
 
     function checkAnswer(index) {
         const qData = questions[currentQuestion];
-        
-        // Kiểm tra đúng nếu là câu cuối (correct === "ALWAYS_TRUE") hoặc chọn đúng index
         if (qData.correct === "ALWAYS_TRUE" || index === qData.correct) {
             currentQuestion++;
-            if (currentQuestion < questions.length) {
-                loadQuestion();
-            } else {
-                showScreen("victory-screen");
-            }
+            if (currentQuestion < questions.length) loadQuestion();
+            else switchScreen('victory-screen');
         } else {
             showFailure();
         }
     }
 
-    function showScreen(screenId) {
-        document.getElementById("quiz-part").classList.add("hidden");
-        document.getElementById(screenId).style.display = "flex";
-    }
-
     function showFailure() {
-        // Hiệu ứng rung container
         const container = document.getElementById("game-container");
         container.classList.add("shake");
         
-        showScreen("failure-screen");
+        switchScreen('failure-screen');
         
-        // Kích hoạt animation chuông vỡ
         const bell = document.getElementById("broken-bell");
-        bell.innerText = "🔔"; // Reset chuông
+        bell.innerText = "🔔";
+        bell.classList.remove("break-animation");
+        
+        // Kích hoạt lại animation
+        void bell.offsetWidth; 
         bell.classList.add("break-animation");
         
-        // Sau khi vỡ thì đổi icon thành mảnh vụn (tùy chọn)
+        // TRÁI TIM XUẤT HIỆN ĐÚNG LÚC CHUÔNG ĐỔI MÀU (450ms)
         setTimeout(() => {
             bell.innerText = "💔";
-            container.classList.remove("shake");
-        }, 800);
+        }, 450);
+
+        setTimeout(() => container.classList.remove("shake"), 500);
     }
 
     function resetGame() {
         currentQuestion = 0;
-        document.getElementById("quiz-part").classList.remove("hidden");
-        document.getElementById("victory-screen").style.display = "none";
-        document.getElementById("failure-screen").style.display = "none";
-        document.getElementById("broken-bell").classList.remove("break-animation");
-        document.getElementById("broken-bell").innerText = "🔔";
-        loadQuestion();
+        const bell = document.getElementById("broken-bell");
+        bell.classList.remove("break-animation");
+        bell.innerText = "🔔";
+        switchScreen('menu-screen'); // Quay về menu để chơi lại từ đầu
     }
-
-    // Khởi tạo game
-    loadQuestion();
 </script>
 
 </body>
