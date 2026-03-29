@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rung Chuông Vàng - Mini Game</title>
+    <title>Rung Chuông Vàng - Pro Edition</title>
     <style>
         :root {
             --primary-gold: #FFD700;
             --dark-gold: #B8860B;
             --bg-color: #1a1a2e;
             --text-white: #ffffff;
+            --error-red: #ff4d4d;
         }
 
         body {
@@ -35,6 +36,18 @@
             max-width: 600px;
             text-align: center;
             position: relative;
+            transition: transform 0.1s;
+        }
+
+        /* Hiệu ứng rung màn hình khi thua */
+        .shake {
+            animation: shake 0.5s screen;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
         }
 
         h1 {
@@ -79,49 +92,58 @@
             transform: translateY(-3px);
         }
 
-        /* Hiệu ứng Chuông */
-        #victory-screen {
+        /* Màn hình kết quả */
+        .screen {
             display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-color);
-            border-radius: 20px;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 10;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .bell {
             font-size: 100px;
             filter: drop-shadow(0 0 10px var(--primary-gold));
-            animation: none;
         }
 
-        @keyframes ring {
-            0% { transform: rotate(0); }
-            10% { transform: rotate(20deg); }
-            20% { transform: rotate(-15deg); }
-            30% { transform: rotate(15deg); }
-            40% { transform: rotate(-10deg); }
-            50% { transform: rotate(10deg); }
-            60% { transform: rotate(-5deg); }
-            100% { transform: rotate(0); }
-        }
-
+        /* Animation Chuông Vàng */
         .ring-animation {
             animation: ring 0.8s infinite ease-in-out;
         }
 
-        .congrats-text {
+        @keyframes ring {
+            0% { transform: rotate(0); }
+            25% { transform: rotate(20deg); }
+            75% { transform: rotate(-20deg); }
+            100% { transform: rotate(0); }
+        }
+
+        /* Animation Chuông Vỡ */
+        .break-animation {
+            animation: break 1s forwards cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            position: relative;
+        }
+
+        @keyframes break {
+            0% { transform: scale(1); opacity: 1; }
+            45% { transform: scale(1.2) rotate(5deg); filter: grayscale(0.5); }
+            50% { transform: scale(1.1) rotate(-5deg); filter: sepia(1) saturate(5); }
+            100% { transform: translateY(100px) rotate(45deg); opacity: 0; }
+        }
+
+        .status-text {
             margin-top: 20px;
             font-size: 2rem;
-            color: var(--primary-gold);
             font-weight: bold;
         }
+
+        .win-text { color: var(--primary-gold); }
+        .lose-text { color: var(--error-red); }
 
         .hidden { display: none; }
     </style>
@@ -142,10 +164,19 @@
         </div>
     </div>
 
-    <div id="victory-screen">
-        <div class="bell" id="golden-bell">🔔</div>
-        <div class="congrats-text">BẠN ĐÃ RUNG CHUÔNG VÀNG!</div>
+    <!-- Màn hình Chiến thắng -->
+    <div id="victory-screen" class="screen">
+        <div class="bell ring-animation">🔔</div>
+        <div class="status-text win-text">BẠN ĐÃ RUNG CHUÔNG VÀNG!</div>
         <button class="option-btn" style="margin-top: 30px;" onclick="resetGame()">Chơi lại</button>
+    </div>
+
+    <!-- Màn hình Thất bại -->
+    <div id="failure-screen" class="screen">
+        <div class="bell" id="broken-bell">🔔</div>
+        <div class="status-text lose-text">CHUÔNG ĐÃ VỠ!</div>
+        <p>Rất tiếc, bạn đã trả lời sai và phải rời sân.</p>
+        <button class="option-btn" style="margin-top: 30px; border-color: var(--error-red); color: white;" onclick="resetGame()">Thử lại</button>
     </div>
 </div>
 
@@ -157,20 +188,19 @@
             correct: 1
         },
         {
-            q: "Câu giữa: Con vật nào là biểu tượng của ngành y?",
-            options: ["Con Hổ", "Con Đại Bàng", "Con Rắn", "Con Voi"],
-            correct: 2
+            q: "Câu giữa: Con gì béo nhất?",
+            options: ["Con Hổ", "Con Voi", "Con Kiến", "Con mẹ mày béo"],
+            correct: 3
         },
         {
             q: "Câu cuối: Số nào tiếp theo trong dãy: 1, 2, 3, 4, 5, ...?",
             options: ["6", "7", "8", "9"],
             correct: 0
-
         },
         {
-            q: "Mr P có ác ko?",
-            options: ["Có", "Yes", "Chắc chắn", "Chưa biết"],
-            correct: 3
+            q: "Mục đích của sự sống là gì?",
+            options: ["Tôi hông biết", "Tại sao..", "Hả", "Gì cơ"],
+            correct: "ALWAYS_TRUE" // Logic đặc biệt: Chọn gì cũng đúng
         }
     ];
 
@@ -178,7 +208,7 @@
 
     function loadQuestion() {
         const qData = questions[currentQuestion];
-        document.getElementById("question-counter").innerText = `Câu hỏi ${currentQuestion + 1}/4`;
+        document.getElementById("question-counter").innerText = `Câu hỏi ${currentQuestion + 1}/${questions.length}`;
         document.getElementById("question-text").innerText = qData.q;
         
         const btns = document.querySelectorAll(".option-btn");
@@ -188,34 +218,56 @@
     }
 
     function checkAnswer(index) {
-        if (index === questions[currentQuestion].correct) {
+        const qData = questions[currentQuestion];
+        
+        // Kiểm tra đúng nếu là câu cuối (correct === "ALWAYS_TRUE") hoặc chọn đúng index
+        if (qData.correct === "ALWAYS_TRUE" || index === qData.correct) {
             currentQuestion++;
             if (currentQuestion < questions.length) {
                 loadQuestion();
             } else {
-                showVictory();
+                showScreen("victory-screen");
             }
         } else {
-            alert("Rất tiếc, bạn đã trả lời sai và phải rời sân thi đấu!");
-            resetGame();
+            showFailure();
         }
     }
 
-    function showVictory() {
+    function showScreen(screenId) {
         document.getElementById("quiz-part").classList.add("hidden");
-        document.getElementById("victory-screen").style.display = "flex";
-        document.getElementById("golden-bell").classList.add("ring-animation");
+        document.getElementById(screenId).style.display = "flex";
+    }
+
+    function showFailure() {
+        // Hiệu ứng rung container
+        const container = document.getElementById("game-container");
+        container.classList.add("shake");
+        
+        showScreen("failure-screen");
+        
+        // Kích hoạt animation chuông vỡ
+        const bell = document.getElementById("broken-bell");
+        bell.innerText = "🔔"; // Reset chuông
+        bell.classList.add("break-animation");
+        
+        // Sau khi vỡ thì đổi icon thành mảnh vụn (tùy chọn)
+        setTimeout(() => {
+            bell.innerText = "💔";
+            container.classList.remove("shake");
+        }, 800);
     }
 
     function resetGame() {
         currentQuestion = 0;
         document.getElementById("quiz-part").classList.remove("hidden");
         document.getElementById("victory-screen").style.display = "none";
-        document.getElementById("golden-bell").classList.remove("ring-animation");
+        document.getElementById("failure-screen").style.display = "none";
+        document.getElementById("broken-bell").classList.remove("break-animation");
+        document.getElementById("broken-bell").innerText = "🔔";
         loadQuestion();
     }
 
-    // Khởi tạo game lần đầu
+    // Khởi tạo game
     loadQuestion();
 </script>
 
