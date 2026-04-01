@@ -12,11 +12,10 @@
             --bg-color: #1a1a2e;
             --text-white: #ffffff;
             --error-red: #ff4d4d;
-            --glass-bg: rgba(255, 255, 255, 0.1);
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-white);
             display: flex;
@@ -28,7 +27,7 @@
         }
 
         #game-container {
-            background: var(--glass-bg);
+            background: rgba(255, 255, 255, 0.1);
             padding: 2.5rem;
             border-radius: 20px;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
@@ -40,39 +39,7 @@
             position: relative;
         }
 
-        .view-counter {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 5px 12px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .live-dot {
-            width: 6px;
-            height: 6px;
-            background-color: #00ff88;
-            border-radius: 50%;
-            box-shadow: 0 0 5px #00ff88;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.5; transform: scale(0.9); }
-            50% { opacity: 1; transform: scale(1.1); }
-            100% { opacity: 0.5; transform: scale(0.9); }
-        }
-
-        #views-number { color: #ffffff; font-weight: bold; }
-        .view-label { color: #888; font-size: 0.7rem; text-transform: uppercase; }
-
+        /* Tiêu đề & Credit */
         .title-group h1 {
             color: var(--primary-gold);
             text-transform: uppercase;
@@ -82,13 +49,13 @@
         }
         .title-group h2 {
             color: var(--error-red);
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             margin-top: 5px; 
             margin-bottom: 30px;
             font-style: italic;
-            opacity: 0.8;
         }
 
+        /* Nút bấm */
         .btn {
             background: transparent;
             border: 2px solid var(--primary-gold);
@@ -116,10 +83,12 @@
         .btn-secret { border-color: #ff00ff; color: #ff00ff; }
         .btn-secret:hover { background: #ff00ff !important; color: white !important; }
 
+        /* Màn hình */
         .screen { display: none; flex-direction: column; animation: fadeIn 0.5s; }
         .active-screen { display: flex; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        /* Animation Chuông Vàng */
         .bell { font-size: 100px; filter: drop-shadow(0 0 10px var(--primary-gold)); margin-bottom: 20px; }
         .ring-animation { animation: ring 0.8s infinite ease-in-out; }
         @keyframes ring {
@@ -128,6 +97,7 @@
             75% { transform: rotate(-20deg); }
         }
 
+        /* HIỆU ỨNG CHUÔNG VỠ BẢN CŨ (ĐẸP) */
         .break-animation {
             animation: break 1.2s forwards cubic-bezier(0.17, 0.67, 0.83, 0.67);
             position: relative;
@@ -149,23 +119,11 @@
         #question-counter { color: var(--primary-gold); font-weight: bold; margin-bottom: 10px; }
         #question-text { font-size: 1.4rem; min-height: 80px; margin-bottom: 25px; }
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-
-        @media (max-width: 480px) {
-            .options-grid { grid-template-columns: 1fr; }
-            .title-group h1 { font-size: 1.8rem; }
-            .view-counter { top: 10px; right: 10px; font-size: 0.75rem; }
-        }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <div class="view-counter">
-        <div class="live-dot"></div>
-        <span id="views-number">...</span>
-        <span class="view-label">truy cập</span>
-    </div>
-
     <div id="menu-screen" class="screen active-screen">
         <div class="title-group">
             <h1>Rung Chuông Vàng</h1>
@@ -185,9 +143,9 @@
 
     <div id="credits-screen" class="screen">
         <h1>Thông Tin</h1>
-        <p>Phiên bản: Pro Edition v7.0</p>
+        <p>Phiên bản: Pro Edition v5.0</p>
         <p>Made by HPK and CMD34</p>
-        <button class="btn btn-secret" onclick="window.open('https://www.youtube.com/watch?v=oyEOohYtgvI', '_blank')">
+        <button class="btn btn-secret" onclick="window.open('https://www.youtube.com/watch?v=l3JdTYIHn-o&start_radio=1', '_blank')">
             QUÀ TẶNG BÍ MẬT 🎁
         </button>
         <button class="btn" onclick="switchScreen('menu-screen')">QUAY LẠI</button>
@@ -219,49 +177,37 @@
 </div>
 
 <script>
-    // --- DỮ LIỆU CÂU HỎI ---
     const questions = [
-        { q: "Đâu là thủ đô của Việt Nam?", options: ["Đà Nẵng", "Hà Nội", "TP. Hồ Chí Minh", "Hải Phòng"], correct: 1 },
-        { q: "Con gì béo nhất trong các lựa chọn sau?", options: ["Con Hổ", "Con Voi", "Con Kiến", "Con mẹ mày béo"], correct: 3 },
-        { q: "Số nào tiếp theo trong dãy: 1, 2, 3, 4, 5, ...?", options: ["6", "7", "8", "9"], correct: 0 },
-        { q: "Mục đích của sự sống là gì?", options: ["Hả?", "Lọ", "Làm giàu", "Tôi không biết"], correct: "ALWAYS_TRUE" }
+        {
+            q: "Đâu là thủ đô của Việt Nam?",
+            options: ["Đà Nẵng", "Hà Nội", "TP. Hồ Chí Minh", "Hải Phòng"],
+            correct: 1
+        },
+        {
+            q: "Con gì béo nhất trong các lựa chọn sau?",
+            options: ["Con Hổ", "Con Voi", "Con Kiến", "Con mẹ mày béo"],
+            correct: 3
+        },
+        {
+            q: "Số nào tiếp theo trong dãy: 1, 2, 3, 4, 5, ...?",
+            options: ["6", "7", "8", "9"],
+            correct: 0
+        },
+        {
+            q: "Mục đích của sự sống là gì?",
+            options: ["Hả?", "Lọ", "Làm giàu", "Tôi không biết"],
+            correct: "ALWAYS_TRUE"
+        }
     ];
 
     let currentQuestion = 0;
 
-    // --- BỘ ĐẾM TRUY CẬP THỰC TẾ (ĐÃ FIX LINK 404) ---
-    // Namespace mới để đảm bảo hoạt động: 'cmd34_rung_chuong_vang_pro'
-    const API_URL = "https://api.counterapi.dev/v1/cmd34_rung_chuong_vang_pro/visits/up";
-
-    async function getVisits() {
-        try {
-            // Thêm timeout để tránh chờ quá lâu khi mạng lỗi
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-            const response = await fetch(API_URL, { signal: controller.signal });
-            clearTimeout(timeoutId);
-
-            if (!response.ok) throw new Error("API lỗi hoặc không tồn tại");
-
-            const data = await response.json();
-            document.getElementById("views-number").innerText = data.count.toLocaleString();
-        } catch (e) {
-            console.warn("Đang dùng bộ đếm dự phòng do lỗi:", e.message);
-            // Nếu lỗi (như chạy offline), hiển thị số ngẫu nhiên cho đẹp
-            let randomViews = Math.floor(Math.random() * 50) + 950; 
-            document.getElementById("views-number").innerText = randomViews;
-        }
-    }
-    
-    getVisits();
-
-    // --- LOGIC GAME ---
     function switchScreen(screenId) {
         document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
         const target = document.getElementById(screenId);
         target.style.display = 'flex';
         target.classList.add('active-screen');
+
         if(screenId === 'quiz-part') loadQuestion();
     }
 
@@ -287,13 +233,22 @@
     function showFailure() {
         const container = document.getElementById("game-container");
         container.classList.add("shake");
+        
         switchScreen('failure-screen');
+        
         const bell = document.getElementById("broken-bell");
         bell.innerText = "🔔";
         bell.classList.remove("break-animation");
+        
+        // Kích hoạt lại animation
         void bell.offsetWidth; 
         bell.classList.add("break-animation");
-        setTimeout(() => { bell.innerText = "💔"; }, 450);
+        
+        // TRÁI TIM XUẤT HIỆN ĐÚNG LÚC CHUÔNG ĐỔI MÀU (450ms)
+        setTimeout(() => {
+            bell.innerText = "💔";
+        }, 450);
+
         setTimeout(() => container.classList.remove("shake"), 500);
     }
 
@@ -302,7 +257,7 @@
         const bell = document.getElementById("broken-bell");
         bell.classList.remove("break-animation");
         bell.innerText = "🔔";
-        switchScreen('menu-screen');
+        switchScreen('menu-screen'); // Quay về menu để chơi lại từ đầu
     }
 </script>
 
