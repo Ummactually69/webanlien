@@ -39,15 +39,21 @@
             position: relative;
         }
 
-        /* Bộ đếm lượt truy cập - Luôn hiển thị */
+        /* Tùy chỉnh vị trí bộ đếm lượt truy cập */
         #visit-counter {
             position: absolute;
             top: 15px;
             right: 20px;
-            z-index: 100;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: var(--primary-gold);
         }
 
-        /* Tiêu đề & Credit */
         .title-group h1 {
             color: var(--primary-gold);
             text-transform: uppercase;
@@ -63,7 +69,6 @@
             font-style: italic;
         }
 
-        /* Nút bấm */
         .btn {
             background: transparent;
             border: 2px solid var(--primary-gold);
@@ -91,12 +96,10 @@
         .btn-secret { border-color: #ff00ff; color: #ff00ff; }
         .btn-secret:hover { background: #ff00ff !important; color: white !important; }
 
-        /* Màn hình */
         .screen { display: none; flex-direction: column; animation: fadeIn 0.5s; }
         .active-screen { display: flex; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Animation Chuông */
         .bell { font-size: 100px; filter: drop-shadow(0 0 10px var(--primary-gold)); margin-bottom: 20px; }
         .ring-animation { animation: ring 0.8s infinite ease-in-out; }
         @keyframes ring {
@@ -132,7 +135,8 @@
 
 <div id="game-container">
     <div id="visit-counter">
-        <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fummactually69.github.io%2Fwebanlien%2F&count_bg=%23FFD700&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=Views&edge_flat=false" alt="Views"/>
+        <span>VIEWS:</span>
+        <img src="https://count.getloli.com/get/@rungchuongvang-cmd34?theme=rule_734" alt="Views" style="height: 20px; vertical-align: middle;">
     </div>
 
     <div id="menu-screen" class="screen active-screen">
@@ -218,7 +222,6 @@
         const target = document.getElementById(screenId);
         target.style.display = 'flex';
         target.classList.add('active-screen');
-
         if(screenId === 'quiz-part') loadQuestion();
     }
 
@@ -244,20 +247,13 @@
     function showFailure() {
         const container = document.getElementById("game-container");
         container.classList.add("shake");
-        
         switchScreen('failure-screen');
-        
         const bell = document.getElementById("broken-bell");
         bell.innerText = "🔔";
         bell.classList.remove("break-animation");
-        
-        void bell.offsetWidth; // Force reflow
+        void bell.offsetWidth; 
         bell.classList.add("break-animation");
-        
-        setTimeout(() => {
-            bell.innerText = "💔";
-        }, 450);
-
+        setTimeout(() => { bell.innerText = "💔"; }, 450);
         setTimeout(() => container.classList.remove("shake"), 500);
     }
 
