@@ -40,7 +40,7 @@
             position: relative;
         }
 
-        /* --- BỘ ĐẾM VIEWS TỐI GIẢN --- */
+        /* --- BỘ ĐẾM VIEWS THẬT - TỐI GIẢN & CHUYÊN NGHIỆP --- */
         .view-counter {
             position: absolute;
             top: 15px;
@@ -59,9 +59,9 @@
         .live-dot {
             width: 6px;
             height: 6px;
-            background-color: var(--error-red);
+            background-color: #00ff88; /* Màu xanh lá cho cảm giác online thật */
             border-radius: 50%;
-            box-shadow: 0 0 5px var(--error-red);
+            box-shadow: 0 0 5px #00ff88;
             animation: pulse 1.5s infinite;
         }
 
@@ -71,7 +71,7 @@
             100% { opacity: 0.5; transform: scale(0.9); }
         }
 
-        #views-number { color: #ddd; font-weight: bold; }
+        #views-number { color: #ffffff; font-weight: bold; }
         .view-label { color: #888; font-size: 0.7rem; text-transform: uppercase; }
 
         /* --- UI GAME --- */
@@ -164,8 +164,8 @@
 <div id="game-container">
     <div class="view-counter">
         <div class="live-dot"></div>
-        <span id="views-number">loading...</span>
-        <span class="view-label">đang xem</span>
+        <span id="views-number">0</span>
+        <span class="view-label">truy cập</span>
     </div>
 
     <div id="menu-screen" class="screen active-screen">
@@ -187,9 +187,9 @@
 
     <div id="credits-screen" class="screen">
         <h1>Thông Tin</h1>
-        <p>Phiên bản: Pro Edition v5.0</p>
+        <p>Phiên bản: Pro Edition v6.0</p>
         <p>Made by HPK and CMD34</p>
-        <button class="btn btn-secret" onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')">
+        <button class="btn btn-secret" onclick="window.open('https://www.youtube.com/watch?v=oyEOohYtgvI', '_blank')">
             QUÀ TẶNG BÍ MẬT 🎁
         </button>
         <button class="btn" onclick="switchScreen('menu-screen')">QUAY LẠI</button>
@@ -223,41 +223,31 @@
 <script>
     // --- DỮ LIỆU CÂU HỎI ---
     const questions = [
-        {
-            q: "Đâu là thủ đô của Việt Nam?",
-            options: ["Đà Nẵng", "Hà Nội", "TP. Hồ Chí Minh", "Hải Phòng"],
-            correct: 1
-        },
-        {
-            q: "Con gì béo nhất trong các lựa chọn sau?",
-            options: ["Con Hổ", "Con Voi", "Con Kiến", "Con mẹ mày béo"],
-            correct: 3
-        },
-        {
-            q: "Số nào tiếp theo trong dãy: 1, 2, 3, 4, 5, ...?",
-            options: ["6", "7", "8", "9"],
-            correct: 0
-        },
-        {
-            q: "Mục đích của sự sống là gì?",
-            options: ["Hả?", "Lọ", "Làm giàu", "Tôi không biết"],
-            correct: "ALWAYS_TRUE"
-        }
+        { q: "Đâu là thủ đô của Việt Nam?", options: ["Đà Nẵng", "Hà Nội", "TP. Hồ Chí Minh", "Hải Phòng"], correct: 1 },
+        { q: "Con gì béo nhất trong các lựa chọn sau?", options: ["Con Hổ", "Con Voi", "Con Kiến", "Con mẹ mày béo"], correct: 3 },
+        { q: "Số nào tiếp theo trong dãy: 1, 2, 3, 4, 5, ...?", options: ["6", "7", "8", "9"], correct: 0 },
+        { q: "Mục đích của sự sống là gì?", options: ["Hả?", "Lọ", "Làm giàu", "Tôi không biết"], correct: "ALWAYS_TRUE" }
     ];
 
     let currentQuestion = 0;
 
-    // --- LOGIC BỘ ĐẾM VIEW ---
-    let viewCount = Math.floor(Math.random() * 200) + 800; // Khởi tạo view từ 800-1000
-    
-    function updateViews() {
-        const change = Math.floor(Math.random() * 7) - 3; // Biến động -3 đến +3
-        viewCount += change;
-        if(viewCount < 100) viewCount = 100;
-        document.getElementById("views-number").innerText = viewCount.toLocaleString();
+    // --- BỘ ĐẾM TRUY CẬP THỰC TẾ ---
+    // API này sẽ tự động lưu trữ số lượt truy cập dựa trên cái tên 'cmd34_rcv_final'
+    const API_URL = "https://api.counterapi.dev/v1/cmd34_rcv_final/visits/increment";
+
+    async function getVisits() {
+        try {
+            const response = await fetch(API_URL);
+            const data = await response.json();
+            document.getElementById("views-number").innerText = data.count.toLocaleString();
+        } catch (e) {
+            console.error("Lỗi đếm view:", e);
+            document.getElementById("views-number").innerText = "1";
+        }
     }
-    setInterval(updateViews, 4000);
-    updateViews();
+    
+    // Gọi đếm view ngay khi mở trang
+    getVisits();
 
     // --- LOGIC GAME ---
     function switchScreen(screenId) {
@@ -291,20 +281,13 @@
     function showFailure() {
         const container = document.getElementById("game-container");
         container.classList.add("shake");
-        
         switchScreen('failure-screen');
-        
         const bell = document.getElementById("broken-bell");
         bell.innerText = "🔔";
         bell.classList.remove("break-animation");
-        
         void bell.offsetWidth; 
         bell.classList.add("break-animation");
-        
-        setTimeout(() => {
-            bell.innerText = "💔";
-        }, 450);
-
+        setTimeout(() => { bell.innerText = "💔"; }, 450);
         setTimeout(() => container.classList.remove("shake"), 500);
     }
 
