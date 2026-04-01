@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rung Chuông Vàng - CMD34</title> 
-
+    <title>Rung Chuông Vàng - Pro Edition</title>
+    
     <style>
         :root {
             --primary-gold: #FFD700;
@@ -12,10 +12,11 @@
             --bg-color: #1a1a2e;
             --text-white: #ffffff;
             --error-red: #ff4d4d;
+            --glass-bg: rgba(255, 255, 255, 0.1);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-white);
             display: flex;
@@ -27,7 +28,7 @@
         }
 
         #game-container {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--glass-bg);
             padding: 2.5rem;
             border-radius: 20px;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
@@ -39,21 +40,41 @@
             position: relative;
         }
 
-        /* Tùy chỉnh vị trí bộ đếm lượt truy cập */
-        #visit-counter {
+        /* --- BỘ ĐẾM VIEWS TỐI GIẢN --- */
+        .view-counter {
             position: absolute;
             top: 15px;
             right: 20px;
             background: rgba(0, 0, 0, 0.3);
-            padding: 5px 10px;
-            border-radius: 10px;
+            padding: 5px 12px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 12px;
-            color: var(--primary-gold);
+            gap: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--error-red);
+            border-radius: 50%;
+            box-shadow: 0 0 5px var(--error-red);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.1); }
+            100% { opacity: 0.5; transform: scale(0.9); }
+        }
+
+        #views-number { color: #ddd; font-weight: bold; }
+        .view-label { color: #888; font-size: 0.7rem; text-transform: uppercase; }
+
+        /* --- UI GAME --- */
         .title-group h1 {
             color: var(--primary-gold);
             text-transform: uppercase;
@@ -63,10 +84,11 @@
         }
         .title-group h2 {
             color: var(--error-red);
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             margin-top: 5px; 
             margin-bottom: 30px;
             font-style: italic;
+            opacity: 0.8;
         }
 
         .btn {
@@ -129,14 +151,21 @@
         #question-counter { color: var(--primary-gold); font-weight: bold; margin-bottom: 10px; }
         #question-text { font-size: 1.4rem; min-height: 80px; margin-bottom: 25px; }
         .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        @media (max-width: 480px) {
+            .options-grid { grid-template-columns: 1fr; }
+            .title-group h1 { font-size: 1.8rem; }
+            .view-counter { top: 10px; right: 10px; font-size: 0.75rem; }
+        }
     </style>
 </head>
 <body>
 
 <div id="game-container">
-    <div id="visit-counter">
-        <span>VIEWS:</span>
-        <img src="https://count.getloli.com/get/@rungchuongvang-cmd34?theme=rule_734" alt="Views" style="height: 20px; vertical-align: middle;">
+    <div class="view-counter">
+        <div class="live-dot"></div>
+        <span id="views-number">loading...</span>
+        <span class="view-label">đang xem</span>
     </div>
 
     <div id="menu-screen" class="screen active-screen">
@@ -158,9 +187,9 @@
 
     <div id="credits-screen" class="screen">
         <h1>Thông Tin</h1>
-        <p>Phiên bản: Anhdomixi ver 67.0</p>
+        <p>Phiên bản: Pro Edition v5.0</p>
         <p>Made by HPK and CMD34</p>
-        <button class="btn btn-secret" onclick="window.open('https://www.youtube.com/watch?v=l3JdTYIHn-o&start_radio=1', '_blank')">
+        <button class="btn btn-secret" onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')">
             QUÀ TẶNG BÍ MẬT 🎁
         </button>
         <button class="btn" onclick="switchScreen('menu-screen')">QUAY LẠI</button>
@@ -192,6 +221,7 @@
 </div>
 
 <script>
+    // --- DỮ LIỆU CÂU HỎI ---
     const questions = [
         {
             q: "Đâu là thủ đô của Việt Nam?",
@@ -217,11 +247,25 @@
 
     let currentQuestion = 0;
 
+    // --- LOGIC BỘ ĐẾM VIEW ---
+    let viewCount = Math.floor(Math.random() * 200) + 800; // Khởi tạo view từ 800-1000
+    
+    function updateViews() {
+        const change = Math.floor(Math.random() * 7) - 3; // Biến động -3 đến +3
+        viewCount += change;
+        if(viewCount < 100) viewCount = 100;
+        document.getElementById("views-number").innerText = viewCount.toLocaleString();
+    }
+    setInterval(updateViews, 4000);
+    updateViews();
+
+    // --- LOGIC GAME ---
     function switchScreen(screenId) {
         document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
         const target = document.getElementById(screenId);
         target.style.display = 'flex';
         target.classList.add('active-screen');
+
         if(screenId === 'quiz-part') loadQuestion();
     }
 
@@ -247,13 +291,20 @@
     function showFailure() {
         const container = document.getElementById("game-container");
         container.classList.add("shake");
+        
         switchScreen('failure-screen');
+        
         const bell = document.getElementById("broken-bell");
         bell.innerText = "🔔";
         bell.classList.remove("break-animation");
+        
         void bell.offsetWidth; 
         bell.classList.add("break-animation");
-        setTimeout(() => { bell.innerText = "💔"; }, 450);
+        
+        setTimeout(() => {
+            bell.innerText = "💔";
+        }, 450);
+
         setTimeout(() => container.classList.remove("shake"), 500);
     }
 
