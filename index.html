@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rung Chuông Vàng</title>
+    <title>Rung Chuông Vàng - CMD34</title>
 
     <style>
         :root {
@@ -39,15 +39,12 @@
             position: relative;
         }
 
-        /* Phần hiển thị lượt truy cập mới thêm */
+        /* Bộ đếm lượt truy cập - Luôn hiển thị */
         #visit-counter {
             position: absolute;
             top: 15px;
             right: 20px;
-            font-size: 0.8rem;
-            color: var(--primary-gold);
-            opacity: 0.8;
-            font-family: monospace;
+            z-index: 100;
         }
 
         /* Tiêu đề & Credit */
@@ -99,7 +96,7 @@
         .active-screen { display: flex; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Animation Chuông Vàng */
+        /* Animation Chuông */
         .bell { font-size: 100px; filter: drop-shadow(0 0 10px var(--primary-gold)); margin-bottom: 20px; }
         .ring-animation { animation: ring 0.8s infinite ease-in-out; }
         @keyframes ring {
@@ -134,7 +131,9 @@
 <body>
 
 <div id="game-container">
-    <div id="visit-counter">Views: <span id="count">...</span></div>
+    <div id="visit-counter">
+        <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fummactually69.github.io%2Fwebanlien%2F&count_bg=%23FFD700&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=Views&edge_flat=false" alt="Views"/>
+    </div>
 
     <div id="menu-screen" class="screen active-screen">
         <div class="title-group">
@@ -189,28 +188,27 @@
 </div>
 
 <script>
-    // PHẦN QUAN TRỌNG: COUNT API
-    function updateCounter() {
-        // Tên 'rung-chuong-vang-cmd34' là duy nhất, bạn có thể đổi nếu muốn reset về 0
-        fetch('https://api.countapi.xyz/hit/rung-chuong-vang-cmd34/visits')
-            .then(res => res.json())
-            .then(res => {
-                document.getElementById('count').innerText = res.value;
-            })
-            .catch(err => {
-                document.getElementById('count').innerText = "Offline";
-            });
-    }
-
-    // Gọi hàm đếm ngay khi tải trang
-    window.onload = updateCounter;
-
-    // --- Giữ nguyên logic game của bạn ---
     const questions = [
-        { q: "Đâu là thủ đô của Việt Nam?", options: ["Đà Nẵng", "Hà Nội", "TP. Hồ Chí Minh", "Hải Phòng"], correct: 1 },
-        { q: "Con gì béo nhất trong các lựa chọn sau?", options: ["Con Hổ", "Con Voi", "Con Kiến", "Con mẹ mày béo"], correct: 3 },
-        { q: "Số nào tiếp theo trong dãy: 1, 2, 3, 4, 5, ...?", options: ["6", "7", "8", "9"], correct: 0 },
-        { q: "Mục đích của sự sống là gì?", options: ["Hả?", "Lọ", "Làm giàu", "Tôi không biết"], correct: "ALWAYS_TRUE" }
+        {
+            q: "Đâu là thủ đô của Việt Nam?",
+            options: ["Đà Nẵng", "Hà Nội", "TP. Hồ Chí Minh", "Hải Phòng"],
+            correct: 1
+        },
+        {
+            q: "Con gì béo nhất trong các lựa chọn sau?",
+            options: ["Con Hổ", "Con Voi", "Con Kiến", "Con mẹ mày béo"],
+            correct: 3
+        },
+        {
+            q: "Số nào tiếp theo trong dãy: 1, 2, 3, 4, 5, ...?",
+            options: ["6", "7", "8", "9"],
+            correct: 0
+        },
+        {
+            q: "Mục đích của sự sống là gì?",
+            options: ["Hả?", "Lọ", "Làm giàu", "Tôi không biết"],
+            correct: "ALWAYS_TRUE"
+        }
     ];
 
     let currentQuestion = 0;
@@ -220,6 +218,7 @@
         const target = document.getElementById(screenId);
         target.style.display = 'flex';
         target.classList.add('active-screen');
+
         if(screenId === 'quiz-part') loadQuestion();
     }
 
@@ -245,13 +244,20 @@
     function showFailure() {
         const container = document.getElementById("game-container");
         container.classList.add("shake");
+        
         switchScreen('failure-screen');
+        
         const bell = document.getElementById("broken-bell");
         bell.innerText = "🔔";
         bell.classList.remove("break-animation");
-        void bell.offsetWidth; 
+        
+        void bell.offsetWidth; // Force reflow
         bell.classList.add("break-animation");
-        setTimeout(() => { bell.innerText = "💔"; }, 450);
+        
+        setTimeout(() => {
+            bell.innerText = "💔";
+        }, 450);
+
         setTimeout(() => container.classList.remove("shake"), 500);
     }
 
