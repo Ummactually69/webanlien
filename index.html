@@ -3,22 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rung Chuông Vàng - Pro Edition 2026</title>
-    
+    <title>Rung Chuông Vàng - sigma</title>
     <style>
         :root {
             --primary-gold: #FFD700;
-            --dark-gold: #B8860B;
-            --bg-color: #0f0f1e;
-            --card-bg: rgba(255, 255, 255, 0.08);
+            --dark-blue: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --success: #22c55e;
+            --error: #ef4444;
             --text-white: #ffffff;
-            --error-red: #ff4d4d;
-            --success-green: #2ecc71;
         }
 
         body {
             font-family: 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--bg-color);
+            background-color: var(--dark-blue);
             color: var(--text-white);
             display: flex;
             justify-content: center;
@@ -30,33 +28,34 @@
 
         #game-container {
             background: var(--card-bg);
-            padding: 2rem;
+            padding: 2.5rem;
             border-radius: 24px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
             width: 90%;
-            max-width: 550px;
+            max-width: 900px; /* Tăng chiều rộng để hợp với layout 2 cột */
             text-align: center;
-            transition: all 0.3s ease;
+            position: relative;
         }
 
-        /* Tiêu đề */
+        /* --- MENU CŨ (GIỮ NGUYÊN) --- */
         .title-group h1 {
             color: var(--primary-gold);
             text-transform: uppercase;
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             margin: 0;
             text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
         }
         .title-group h2 {
-            color: var(--error-red);
-            font-size: 1.1rem;
+            color: var(--error);
+            font-size: 1.2rem;
             margin-top: 5px;
-            font-weight: 300;
+            margin-bottom: 30px;
+            font-style: italic;
         }
 
-        /* Nút bấm */
+        /* Nút bấm Menu */
         .btn {
             background: rgba(255, 255, 255, 0.05);
             border: 2px solid var(--primary-gold);
@@ -64,7 +63,7 @@
             padding: 14px 20px;
             border-radius: 12px;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
             transition: all 0.2s;
             width: 100%;
@@ -73,76 +72,82 @@
             text-decoration: none;
         }
 
-        .btn:hover {
-            background: var(--primary-gold);
-            color: #000;
-            transform: scale(1.02);
+        .btn:hover { background: var(--primary-gold); color: #000; transform: scale(1.02); }
+        .btn.correct { background: var(--success) !important; border-color: var(--success); color: white; }
+        .btn.wrong { background: var(--error) !important; border-color: var(--error); color: white; }
+        .btn.disabled { pointer-events: none; opacity: 0.8; }
+
+        /* --- LAYOUT 2 CỘT (MỚI) --- */
+        .quiz-wrapper {
+            display: none; /* Ẩn mặc định, chỉ hiện khi chơi */
+            gap: 25px;
+            text-align: left;
+            margin-top: 20px;
         }
 
-        .btn:active { transform: scale(0.98); }
+        .image-side {
+            flex: 1.2;
+            aspect-ratio: 16/9;
+            background: #1e293b;
+            border-radius: 15px;
+            border: 2px solid var(--primary-gold);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .image-side img { width: 100%; height: 100%; object-fit: cover; }
 
-        .btn-secret { border-color: #ff00ff; color: #ff00ff; }
-        .btn-secret:hover { background: #ff00ff; color: white; }
+        .question-side { flex: 1; display: flex; flex-direction: column; }
+        #question-text { font-size: 1.4rem; font-weight: bold; margin-bottom: 20px; min-height: 60px; }
 
-        /* Các màn hình */
-        .screen { display: none; flex-direction: column; animation: fadeIn 0.4s ease-out; }
+        /* --- MÀN HÌNH & HIỆU ỨNG --- */
+        .screen { display: none; flex-direction: column; animation: fadeIn 0.4s; }
         .active-screen { display: flex; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Animation Chuông */
         .bell { font-size: 80px; margin-bottom: 15px; display: inline-block; }
-        .ring-animation { animation: ring 0.8s infinite ease-in-out; }
+        .ring-anim { animation: ring 0.8s infinite ease-in-out; }
         @keyframes ring {
             0%, 100% { transform: rotate(0); }
             25% { transform: rotate(15deg); }
             75% { transform: rotate(-15deg); }
         }
 
-        .break-animation {
-            animation: break 1.2s forwards;
+        /* Hiệu ứng chuông vỡ Overlay */
+        #effect-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            border-radius: 24px;
         }
+        .break-anim { animation: break 1s forwards; }
         @keyframes break {
             0% { transform: scale(1); }
-            45% { transform: scale(1.2) rotate(10deg); filter: sepia(1) saturate(5); }
-            100% { transform: translateY(300px) rotate(90deg); opacity: 0; }
+            50% { transform: scale(1.3) rotate(10deg); filter: sepia(1) saturate(3); }
+            100% { transform: translateY(400px) rotate(90deg); opacity: 0; }
         }
 
-        .shake { animation: shake 0.4s; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
-        }
-
-        /* Quiz UI */
-        #question-counter { color: var(--primary-gold); font-size: 0.9rem; margin-bottom: 10px; opacity: 0.8; }
-        #question-text { font-size: 1.3rem; font-weight: 500; min-height: 70px; margin-bottom: 20px; line-height: 1.4; }
-        
-        .options-grid { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 12px; 
-        }
-
-        /* Responsive cho mobile */
-        @media (max-width: 480px) {
-            .options-grid { grid-template-columns: 1fr; }
-            .title-group h1 { font-size: 1.8rem; }
+        @media (max-width: 768px) {
+            .quiz-wrapper { flex-direction: column; }
+            #game-container { max-width: 500px; padding: 1.5rem; }
         }
     </style>
 </head>
 <body>
 
-<audio id="bg-music" loop>
-    <source src="dep.mp3" type="audio/mpeg">
-</audio>
+<audio id="bg-music" loop><source src="dep.mp3" type="audio/mpeg"></audio>
 
 <div id="game-container">
     <div id="menu-screen" class="screen active-screen">
         <div class="title-group">
             <div class="bell">🔔</div>
             <h1>Rung Chuông Vàng</h1>
-            <h2>Premium Version - CMD34</h2>
+            <h2>Quy mô trường - K9A2</h2>
         </div>
         <button class="btn" onclick="startGame()">BẮT ĐẦU CHƠI</button>
         <button class="btn" onclick="switchScreen('settings-screen')">CÀI ĐẶT</button>
@@ -151,40 +156,38 @@
 
     <div id="settings-screen" class="screen">
         <h1>Cài Đặt</h1>
-        <p>Âm thanh: Tự động kích hoạt</p>
-        <p>Chế độ: Vui vẻ là chính</p>
+        <p>Âm thanh: Đã sẵn sàng</p>
         <button class="btn" onclick="switchScreen('menu-screen')">QUAY LẠI</button>
     </div>
 
     <div id="credits-screen" class="screen">
         <h1>Thông Tin</h1>
-        <p>Phiên bản: 6.0 Stable</p>
-        <p>Developer: HPK & CMD34</p>
-        <button class="btn btn-secret" onclick="window.open('https://www.youtube.com/watch?v=l3JdTYIHn-o', '_blank')">
-            QUÀ TẶNG BÍ MẬT 🎁
-        </button>
+        <p>Phát triển bởi: HPK & CMD34</p>
+        <button class="btn" style="border-color:#ff00ff; color:#ff00ff" onclick="window.open('https://www.youtube.com/watch?v=l3JdTYIHn-o')">🎁 BÍ MẬT</button>
         <button class="btn" onclick="switchScreen('menu-screen')">QUAY LẠI</button>
     </div>
 
     <div id="quiz-part" class="screen">
-        <div id="question-counter">Câu hỏi 1/4</div>
-        <div id="question-text">Đang chuẩn bị...</div>
-        <div class="options-grid" id="options-container">
+        <div id="question-counter" style="color: var(--primary-gold); text-align: left; font-weight: bold;">Câu hỏi 1/4</div>
+        <div class="quiz-wrapper" id="quiz-wrapper" style="display: flex;">
+            <div class="image-side">
+                <img id="q-image" src="https://via.placeholder.com/400x225" alt="Quiz">
             </div>
+            <div class="question-side">
+                <div id="question-text">Câu hỏi đang tải...</div>
+                <div id="options-container"></div>
+            </div>
+        </div>
     </div>
 
     <div id="victory-screen" class="screen">
-        <div class="bell ring-animation" style="font-size: 100px;">🔔</div>
-        <h2 style="color:var(--primary-gold)">XUẤT SẮC!</h2>
-        <p>Bạn đã chính thức Rung Chuông Vàng!</p>
-        <button class="btn" onclick="resetGame()">CHƠI LẠI TỪ ĐẦU</button>
+        <div class="bell ring-anim" style="font-size: 100px;">🔔</div>
+        <h1 style="color:var(--primary-gold)">CHIẾN THẮNG!</h1>
+        <button class="btn" onclick="location.reload()">CHƠI LẠI</button>
     </div>
 
-    <div id="failure-screen" class="screen">
-        <div class="bell" id="broken-bell">🔔</div>
-        <h2 style="color:var(--error-red)">THỬ THÁCH THẤT BẠI</h2>
-        <p id="fail-msg">Bạn đã trả lời sai rồi...</p>
-        <button class="btn" style="border-color: var(--error-red)" onclick="resetGame()">THỬ LẠI</button>
+    <div id="effect-overlay">
+        <div id="overlay-bell" style="font-size: 120px;">🔔</div>
     </div>
 </div>
 
@@ -192,98 +195,107 @@
     const questions = [
         {
             q: "Thủ đô của Việt Nam là thành phố nào?",
+            img: "https://images.unsplash.com/photo-1555921015-5532091f6026?w=500",
             options: ["Đà Nẵng", "Hà Nội", "TP. Hồ Chí Minh", "Huế"],
             correct: 1
         },
         {
-            q: "Theo âm lịch, năm 2025 là năm con gì?",
-            options: ["Con Rồng (Thìn)", "Con Rắn (Tỵ)", "Con Ngựa (Ngọ)", "Con Dê (Mùi)"],
-            correct: 1
-        },
-        {
-            q: "Ngày 30/4 là ngày gì?",
-            options: ["Quốc Khánh", "Ngày Quốc tế đàn ông", "Giải phóng miền nam", "Ngày thứ hai"],
+            q: "Năm 2026 theo âm lịch là năm con gì?",
+            img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZr6v4on0kYSHbXuyTKMNgttKHlGJzwzsdow&s",
+            options: ["Con Rồng", "Con Rắn", "Con Ngựa", "Con Dê"],
             correct: 2
         },
         {
-            q: "Câu hỏi cuối: Xin đánh giá ?",
-            options: ["Ok", "Quá chán ", "Đỉnh", "Nhìn biết chat gpt"],
+            q: "Hòa bình có đẹp không?",
+            img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500",
+            options: ["CHắc chắn là không", "Tôi chưa từng thấy hòa bình", "Không", "Có"],
+            correct: 3
+        },
+        {
+            q: "Bạn có hài lòng với bộ code này không?",
+            img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500",
+            options: ["Có", "Rất có", "Tuyệt vời", "10 điểm"],
             correct: "ALWAYS_TRUE"
         }
     ];
 
-    let currentQuestion = 0;
+    let currentQ = 0;
     const bgMusic = document.getElementById('bg-music');
 
-    function switchScreen(screenId) {
+    function switchScreen(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
-        document.getElementById(screenId).classList.add('active-screen');
+        document.getElementById(id).classList.add('active-screen');
     }
 
     function startGame() {
-        // Play nhạc khi người dùng tương tác
-        bgMusic.play().catch(e => console.log("Audio play blocked"));
-        currentQuestion = 0;
+        bgMusic.play().catch(() => {});
+        currentQ = 0;
         switchScreen('quiz-part');
         loadQuestion();
     }
 
     function loadQuestion() {
-        const qData = questions[currentQuestion];
-        document.getElementById("question-counter").innerText = `CÂU HỎI ${currentQuestion + 1}/${questions.length}`;
-        document.getElementById("question-text").innerText = qData.q;
+        const data = questions[currentQ];
+        document.getElementById("question-counter").innerText = `CÂU HỎI ${currentQ + 1}/${questions.length}`;
+        document.getElementById("question-text").innerText = data.q;
+        document.getElementById("q-image").src = data.img;
         
         const container = document.getElementById("options-container");
-        container.innerHTML = ""; // Xóa các nút cũ
+        container.innerHTML = "";
 
-        qData.options.forEach((opt, index) => {
+        data.options.forEach((opt, index) => {
             const btn = document.createElement("button");
             btn.className = "btn";
             btn.innerText = opt;
-            btn.onclick = () => checkAnswer(index);
+            btn.onclick = () => checkAnswer(index, btn);
             container.appendChild(btn);
         });
     }
 
-    function checkAnswer(index) {
-        const qData = questions[currentQuestion];
-        
-        if (qData.correct === "ALWAYS_TRUE" || index === qData.correct) {
-            currentQuestion++;
-            if (currentQuestion < questions.length) {
-                loadQuestion();
-            } else {
-                switchScreen('victory-screen');
-            }
+    function checkAnswer(index, btn) {
+        const data = questions[currentQ];
+        const allBtns = document.querySelectorAll(".question-side .btn");
+        allBtns.forEach(b => b.classList.add('disabled'));
+
+        const isCorrect = (data.correct === "ALWAYS_TRUE" || index === data.correct);
+
+        if (isCorrect) {
+            btn.classList.add('correct');
+            setTimeout(nextStep, 1200);
         } else {
-            showFailure();
+            btn.classList.add('wrong');
+            if (data.correct !== "ALWAYS_TRUE") allBtns[data.correct].classList.add('correct');
+            
+            setTimeout(() => {
+                showBreakEffect();
+            }, 800);
         }
     }
 
-    function showFailure() {
-        const container = document.getElementById("game-container");
-        container.classList.add("shake");
-        
-        switchScreen('failure-screen');
-        
-        const bell = document.getElementById("broken-bell");
-        bell.innerText = "🔔";
-        bell.classList.remove("break-animation");
-        
-        void bell.offsetWidth; // Force reflow
-        bell.classList.add("break-animation");
-        
-        // Hiệu ứng đổi mảnh vỡ sau 450ms
-        setTimeout(() => { bell.innerText = "💔"; }, 450);
-        setTimeout(() => container.classList.remove("shake"), 500);
+    function showBreakEffect() {
+        const overlay = document.getElementById('effect-overlay');
+        const bell = document.getElementById('overlay-bell');
+        overlay.style.display = 'flex';
+        bell.innerText = '🔔';
+        bell.classList.remove('break-anim');
+        void bell.offsetWidth; 
+        bell.classList.add('break-anim');
+
+        setTimeout(() => { bell.innerText = '💔'; }, 450);
+
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            nextStep();
+        }, 1500);
     }
 
-    function resetGame() {
-        currentQuestion = 0;
-        const bell = document.getElementById("broken-bell");
-        bell.classList.remove("break-animation");
-        bell.innerText = "🔔";
-        switchScreen('menu-screen');
+    function nextStep() {
+        currentQ++;
+        if (currentQ < questions.length) {
+            loadQuestion();
+        } else {
+            switchScreen('victory-screen');
+        }
     }
 </script>
 
