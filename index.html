@@ -8,17 +8,22 @@
         :root {
             --primary-gold: #FFD700;
             --dark-blue: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.85);
+            --card-bg: rgba(15, 23, 42, 0.8); /* Làm đậm nền card một chút để dễ đọc chữ trên GIF */
             --success: #22c55e;
             --error: #ef4444;
             --text-white: #ffffff;
             --sigma: #ff00ff;
-            
         }
 
         body {
             font-family: 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--dark-blue);
+            /* Cập nhật background GIF ở đây */
+            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmgxNTl2OWQ3M2Q1dDQ2dnQyenl1c3BmMmF3N3YxdGNsbGZpN3FuYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KBWvYMj8Zyz2zoLNfu/giphy.gif');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            
             color: var(--text-white);
             display: flex;
             justify-content: center;
@@ -32,16 +37,16 @@
             background: var(--card-bg);
             padding: 2.5rem;
             border-radius: 24px;
-            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(15px); /* Hiệu ứng kính mờ giúp nhìn xuyên qua GIF đẹp hơn */
+            border: 1px solid rgba(255, 215, 0, 0.3);
             width: 90%;
-            max-width: 900px; /* Tăng chiều rộng để hợp với layout 2 cột */
+            max-width: 900px;
             text-align: center;
             position: relative;
         }
 
-        /* --- MENU CŨ (GIỮ NGUYÊN) --- */
+        /* --- MENU CŨ --- */
         .title-group h1 {
             color: var(--primary-gold);
             text-transform: uppercase;
@@ -50,31 +55,15 @@
             text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
         }
         .title-group h2 {
-            color: var(--error);
+            color: #ff6b6b;
             font-size: 1.2rem;
             margin-top: 5px;
             margin-bottom: 30px;
             font-style: italic;
         }
 
-        /* Nút bấm Menu */
-        .btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid var(--primary-gold);
-            color: white;
-            padding: 14px 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: all 0.2s;
-            width: 100%;
-            margin-bottom: 12px;
-            display: block;
-            text-decoration: none;
-        }
-        .btn2 {
-            background: rgba(255, 255, 255, 0.05);
+        .btn, .btn2 {
+            background: rgba(255, 255, 255, 0.1);
             border: 2px solid var(--primary-gold);
             color: white;
             padding: 14px 20px;
@@ -95,9 +84,9 @@
         .btn.wrong { background: var(--error) !important; border-color: var(--error); color: white; }
         .btn.disabled { pointer-events: none; opacity: 0.8; }
 
-        /* --- LAYOUT 2 CỘT (MỚI) --- */
+        /* --- LAYOUT 2 CỘT --- */
         .quiz-wrapper {
-            display: none; /* Ẩn mặc định, chỉ hiện khi chơi */
+            display: none; 
             gap: 25px;
             text-align: left;
             margin-top: 20px;
@@ -132,7 +121,6 @@
             75% { transform: rotate(-15deg); }
         }
 
-        /* Hiệu ứng chuông vỡ Overlay */
         #effect-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -186,7 +174,7 @@
     </div>
 
     <div id="quiz-part" class="screen">
-        <div id="question-counter" style="color: var(--primary-gold); text-align: left; font-weight: bold;">Câu hỏi 1/4</div>
+        <div id="question-counter" style="color: var(--primary-gold); text-align: left; font-weight: bold; margin-bottom: 10px;">Câu hỏi 1/4</div>
         <div class="quiz-wrapper" id="quiz-wrapper" style="display: flex;">
             <div class="image-side">
                 <img id="q-image" src="https://via.placeholder.com/400x225" alt="Quiz">
@@ -212,29 +200,53 @@
 <script>
     const questions = [
         {
-            q: "Thủ đô của Việt Nam là thành phố nào?",
+            q: "Đâu là hoạt động vì cộng đồng?",
             img: "https://images.unsplash.com/photo-1555921015-5532091f6026?w=500",
-            options: ["Đà Nẵng", "Hà Nội", "TP. Hồ Chí Minh", "Huế"],
+            options: ["A. Lễ hội quê hương.", "B. Thiện nguyện.", "Lễ tình nhân", "D. Biểu diễn văn nghệ."],
             correct: 1
         },
         {
-            q: "Năm 2026 theo âm lịch là năm con gì?",
-            img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZr6v4on0kYSHbXuyTKMNgttKHlGJzwzsdow&s",
-            options: ["Con Rồng", "Con Rắn", "Con Ngựa", "Con Dê"],
-            correct: 2
-        },
-        {
-            q: "Hòa bình có đẹp không?",
-            img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500",
-            options: ["CHắc chắn là không", "Tôi chưa từng thấy hòa bình", "Không", "Có"],
+            q: "Những hành vi giao tiếp, ứng xử không có văn hóa khi tham gia các hoạt động trong cộng đồng là",
+            img: "https://static0.srcdn.com/wordpress/wp-content/uploads/2023/01/griffith-on-the-cover-of-berserk-the-golden-age-movie-three-the-advent.jpg?w=1200&h=675&fit=crop",
+            options: ["A. Nhẹ nhàng, ân cần, hỗ trợ.", "B. Xếp hàng khi sử dụng các dịch vụ công cộng.", "C. Nói lời cảm ơn khi được giúp đỡ, xin lỗi khi làm phiền tới người khác", "D. Bật nhạc to để mọi người cùng nghe và hưởng ứng nơi công cộng."],
             correct: 3
         },
         {
-            q: "Bạn có hài lòng với website này không?",
+            q: "Yếu tố nào sau đây là rào cản lớn đối với sự phát triển mạng lưới quan hệ cộng đồng? ",
+            img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500",
+            options: ["A. Thiếu sự tin tưởng giữa các thành viên", "B. Chính quyền địa phương hỗ trợ cộng đồng.", "C. Nhiều hoạt động kết nối được tổ chức.", "D. Tinh thần hợp tác giữa các cá nhân cao."],
+            correct: 0
+        },
+        {
+            q: "Hoạt động nào giúp tăng cường mạng lưới quan hệ cộng đồng? ",
             img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500",
-            options: ["Có", "Rất có", "Tuyệt vời", "Tàm tạm"],
+            options: ["A. Các buổi họp tổ dân phố.", "B. Các sự kiện từ thiện, tình nguyện.", "C. Các chương trình giao lưu văn hóa, thể thao.", "D.Tổ chức hội thảo và sự kiện vì cộng đồng."],
             correct: "ALWAYS_TRUE"
-        }
+        },
+        {
+            q: "Mạng lưới quan hệ cộng đồng ở địa phương là gì? ",
+            img: "https://kinhmatkavi.vn/wp-content/uploads/2025/01/5-buoc-xay-dung-networking-moi-quan-he-tot-hieu-qua.webp",
+            options: ["Các mối quan hệ giữa các cá nhân trong cùng một gia đình.", " Các tổ chức, cá nhân trong cùng một địa phương có sự liên kết, hỗ trợ lẫn nhau.", " Hệ thống giao thông và cơ sở hạ tầng trong khu vực.", " Các nhóm bạn thân cùng sinh sống trong một khu vực."],
+            correct: 1
+        },
+        {
+            q: "Truyền thống quê hương là những giá trị tốt đẹp, riêng biệt của mỗi vùng miền, địa phương, được hình thành và khẳng định qua",
+            img: "https://cdn.thuvienphapluat.vn/uploads/laodongtienluong/20230301/PDP/hinh-anh-2757.jpg",
+            options: ["A. Lối sống", " B. Định kiến", " C. Thời gian.", " D. Quan niệm."],
+            correct: 2
+        },
+        {
+            q: "Đâu là hành vi có văn hóa khi tham gia hoạt động cộng đồng?",
+            img: "https://tiengviethuchanh.wordpress.com/wp-content/uploads/2018/10/h3.jpg",
+            options: ["A. Lễ phép với người lớn.", " B. Làm ồn nơi cộng cộng.", "C. Mặc trang phục không phù hợp.", " D. Chém người xong chạy"],
+            correct: 0
+        },
+        {
+            q:"Yếu tố nào ảnh hưởng lớn nhất đến sự phát triển của mạng lưới quan hệ cộng đồng? ",
+            img: " https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlSTb_tmEzBAhKPwGZlD40YjsWuOzxt4TksA&s",
+            options: [ "A. Điều kiện kinh tế của khu vực.","B. Trình độ học vấn của người dân.","C. Mức độ gắn kết, tương tác giữa các cá nhân và tổ chức.","D. Chính sách phát triển của nhà nước."],
+            correct: 2,
+        },
     ];
 
     let currentQ = 0;
