@@ -3,144 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rung Chuông Vàng - sigma</title>
+    <title>Rung Chuông Vàng</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Be+Vietnam+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-gold: #FFD700;
-            --dark-blue: #0f172a;
-            --card-bg: rgba(15, 23, 42, 0.8); /* Làm đậm nền card một chút để dễ đọc chữ trên GIF */
+            --gold: #FFD700;
+            --gold-dim: #b8970a;
+            --dark: #080d1a;
+            --surface: rgba(10, 18, 38, 0.88);
+            --surface2: rgba(255,255,255,0.04);
+            --border: rgba(255, 215, 0, 0.25);
             --success: #22c55e;
             --error: #ef4444;
-            --text-white: #ffffff;
-            --sigma: #ff00ff;
+            --sigma: #d946ef;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Segoe UI', Roboto, sans-serif;
-            /* Cập nhật background GIF ở đây */
-            background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmgxNTl2OWQ3M2Q1dDQ2dnQyenl1c3BmMmF3N3YxdGNsbGZpN3FuYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KBWvYMj8Zyz2zoLNfu/giphy.gif');
+            background-image:
+                linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+                url('https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZmgxNTl2OWQ3M2Q1dDQ2dnQyenl1c3BmMmF3N3YxdGNsbGZpN3FuYiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KBWvYMj8Zyz2zoLNfu/giphy.gif');
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
             background-attachment: fixed;
-            
-            color: var(--text-white);
+            color: var(--text);
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
-            margin: 0;
-            overflow: hidden;
+            padding: 20px;
+            overflow-x: hidden;
         }
 
         #game-container {
-            background: var(--card-bg);
+            background: var(--surface);
             padding: 2.5rem;
-            border-radius: 24px;
-            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(15px); /* Hiệu ứng kính mờ giúp nhìn xuyên qua GIF đẹp hơn */
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            width: 90%;
-            max-width: 900px;
+            border-radius: 28px;
+            box-shadow: 0 20px 80px rgba(0,0,0,0.8), 0 0 0 1px var(--border);
+            backdrop-filter: blur(20px);
+            width: 100%;
+            max-width: 960px;
             text-align: center;
             position: relative;
+            margin: auto;
         }
 
-        /* --- MENU CŨ --- */
-        .title-group h1 {
-            color: var(--primary-gold);
-            text-transform: uppercase;
-            font-size: 2.5rem;
-            margin: 0;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-        }
-        .title-group h2 {
-            color: #ff6b6b;
-            font-size: 1.2rem;
-            margin-top: 5px;
-            margin-bottom: 30px;
-            font-style: italic;
+        /* ── SCREENS ── */
+        .screen { display: none; flex-direction: column; animation: fadeUp 0.35s ease; }
+        .active-screen { display: flex; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(14px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
-        .btn, .btn2 {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid var(--primary-gold);
-            color: white;
-            padding: 14px 20px;
-            border-radius: 12px;
+        /* ── MENU ── */
+        .bell-wrap { position: relative; display: inline-block; margin-bottom: 10px; }
+        .bell { font-size: 88px; display: inline-block; }
+        .ring-anim { animation: ring 0.9s infinite ease-in-out; transform-origin: top center; }
+        @keyframes ring {
+            0%,100%{ transform: rotate(0); }
+            25%    { transform: rotate(14deg); }
+            75%    { transform: rotate(-14deg); }
+        }
+        .title-main {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            color: var(--gold);
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-shadow: 0 0 24px rgba(255,215,0,0.45);
+        }
+        .title-sub { color: #ff8c8c; font-size: 1.05rem; margin: 4px 0 30px; font-style: italic; }
+
+        /* ── BUTTONS ── */
+        .btn, .btn-sigma, .btn-ghost, .btn-danger, .btn-success {
+            border-radius: 14px;
             cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: all 0.2s;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            padding: 13px 20px;
+            transition: all 0.18s;
             width: 100%;
-            margin-bottom: 12px;
             display: block;
             text-decoration: none;
+            margin-bottom: 12px;
+            border: 2px solid;
+            letter-spacing: 0.5px;
         }
+        .btn        { background: rgba(255,255,255,0.07); border-color: var(--gold); color: #fff; }
+        .btn:hover  { background: var(--gold); color: #000; transform: scale(1.02); }
+        .btn-sigma  { background: rgba(255,255,255,0.07); border-color: var(--sigma); color: #fff; }
+        .btn-sigma:hover { background: var(--sigma); color: #fff; transform: scale(1.02); }
+        .btn-ghost  { background: transparent; border-color: var(--muted); color: var(--muted); margin-bottom: 0; }
+        .btn-ghost:hover { border-color: #fff; color: #fff; }
+        .btn-danger { background: rgba(239,68,68,0.12); border-color: var(--error); color: var(--error); padding: 7px 14px; font-size: .85rem; width: auto; margin: 0; }
+        .btn-danger:hover { background: var(--error); color: #fff; }
+        .btn-success { background: rgba(34,197,94,0.12); border-color: var(--success); color: var(--success); }
+        .btn-success:hover { background: var(--success); color: #fff; transform: scale(1.02); }
+        .btn.correct  { background: var(--success) !important; border-color: var(--success); color: #fff; }
+        .btn.wrong    { background: var(--error) !important; border-color: var(--error); color: #fff; }
+        .btn.disabled { pointer-events: none; opacity: .8; }
 
-        .btn:hover { background: var(--primary-gold); color: #000; transform: scale(1.02); }
-        .btn2:hover { background: var(--sigma); color: #000; transform: scale(1.02); }
-        .btn.correct { background: var(--success) !important; border-color: var(--success); color: white; }
-        .btn.wrong { background: var(--error) !important; border-color: var(--error); color: white; }
-        .btn.disabled { pointer-events: none; opacity: 0.8; }
-
-        /* --- LAYOUT 2 CỘT --- */
-        .quiz-wrapper {
-            display: none; 
-            gap: 25px;
-            text-align: left;
-            margin-top: 20px;
-        }
-
+        /* ── QUIZ ── */
+        #question-counter { color: var(--gold); text-align: left; font-weight: 700; margin-bottom: 12px; font-size: .95rem; letter-spacing: 1px; }
+        .quiz-wrapper { display: flex; gap: 24px; text-align: left; }
         .image-side {
-            flex: 1.2;
+            flex: 1.3;
             aspect-ratio: 16/9;
-            background: #1e293b;
-            border-radius: 15px;
-            border: 2px solid var(--primary-gold);
+            background: #0d1526;
+            border-radius: 16px;
+            border: 2px solid var(--border);
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
         }
         .image-side img { width: 100%; height: 100%; object-fit: cover; }
-
         .question-side { flex: 1; display: flex; flex-direction: column; }
-        #question-text { font-size: 1.4rem; font-weight: bold; margin-bottom: 20px; min-height: 60px; }
+        #question-text { font-size: 1.25rem; font-weight: 700; margin-bottom: 18px; min-height: 56px; line-height: 1.5; }
 
-        /* --- MÀN HÌNH & HIỆU ỨNG --- */
-        .screen { display: none; flex-direction: column; animation: fadeIn 0.4s; }
-        .active-screen { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* ── CREATOR SCREEN ── */
+        #creator-screen { align-items: stretch; text-align: left; }
+        .creator-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
+        .creator-header h1 { font-family:'Segoe UI',  cursive; color: var(--gold); font-size: 1.9rem; font-weight: 800; }
 
-        .bell { font-size: 80px; margin-bottom: 15px; display: inline-block; }
-        .ring-anim { animation: ring 0.8s infinite ease-in-out; }
-        @keyframes ring {
-            0%, 100% { transform: rotate(0); }
-            25% { transform: rotate(15deg); }
-            75% { transform: rotate(-15deg); }
+        /* Import JSON */
+        .import-bar {
+            display: flex; gap: 10px; margin-bottom: 20px; align-items: center;
+            background: var(--surface2); border: 1px solid var(--border);
+            border-radius: 14px; padding: 12px 16px;
         }
+        .import-bar input { flex: 1; background: transparent; border: none; color: var(--text); font-size: .9rem; outline: none; }
+        .import-bar input::placeholder { color: var(--muted); }
+        .import-bar button { background: var(--gold); color: #000; border: none; border-radius: 9px; padding: 7px 16px; font-weight: 700; cursor: pointer; white-space: nowrap; font-family: inherit; font-size: .9rem; }
+        .import-bar button:hover { background: #ffc400; }
 
+        /* Question Cards */
+        #questions-list { display: flex; flex-direction: column; gap: 18px; max-height: 55vh; overflow-y: auto; padding-right: 6px; padding-bottom: 4px; }
+        #questions-list::-webkit-scrollbar { width: 5px; }
+        #questions-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+
+        .q-card {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px 20px;
+            transition: border-color 0.2s;
+        }
+        .q-card:hover { border-color: rgba(255,215,0,0.5); }
+        .q-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 10px; }
+        .q-num { font-family: 'Segoe UI', Roboto, sans-serif;; color: var(--gold); font-weight: 800; font-size: 1.1rem; white-space: nowrap; }
+        .q-card-head .btn-danger { flex-shrink: 0; }
+
+        .field-group { margin-bottom: 12px; }
+        .field-group label { display: block; font-size: .78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 5px; }
+        .field-group input, .field-group textarea {
+            width: 100%; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px; color: var(--text); font-family: inherit; font-size: .93rem;
+            padding: 9px 13px; outline: none; transition: border-color .2s; resize: vertical;
+        }
+        .field-group input:focus, .field-group textarea:focus { border-color: rgba(255,215,0,0.5); }
+
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .option-row { display: flex; align-items: center; gap: 8px; }
+        .option-row input[type="text"] { flex: 1; }
+        .option-row input[type="radio"] { accent-color: var(--gold); width: 16px; height: 16px; flex-shrink: 0; cursor: pointer; }
+        .option-label { font-size: .78rem; color: var(--muted); white-space: nowrap; }
+
+        .img-preview { display: flex; gap: 10px; align-items: center; }
+        .img-preview-box {
+            width: 80px; height: 45px; border-radius: 8px; border: 1px solid var(--border);
+            overflow: hidden; flex-shrink: 0; background: #0d1526; display: flex; align-items: center; justify-content: center;
+        }
+        .img-preview-box img { width: 100%; height: 100%; object-fit: cover; }
+        .img-preview-box span { font-size: .7rem; color: var(--muted); }
+
+        .creator-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        .creator-actions button { flex: 1; margin-bottom: 0; min-width: 120px; }
+
+        /* Format guide */
+        .format-guide {
+            background: rgba(0,0,0,0.3); border: 1px dashed var(--border); border-radius: 14px;
+            padding: 14px 18px; margin-bottom: 18px; font-size: .83rem; color: var(--muted); line-height: 1.7;
+        }
+        .format-guide summary { cursor: pointer; color: var(--gold); font-weight: 700; font-size: .9rem; margin-bottom: 4px; }
+        .format-guide pre { background: rgba(0,0,0,0.4); border-radius: 9px; padding: 10px 14px; overflow-x: auto; font-size: .78rem; color: #a5f3fc; margin-top: 8px; }
+
+        /* EFFECT OVERLAY */
         #effect-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            border-radius: 24px;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.88); display: none; justify-content: center;
+            align-items: center; z-index: 100; border-radius: 28px;
         }
         .break-anim { animation: break 1s forwards; }
         @keyframes break {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.3) rotate(10deg); filter: sepia(1) saturate(3); }
+            0%   { transform: scale(1); }
+            50%  { transform: scale(1.3) rotate(10deg); filter: sepia(1) saturate(3); }
             100% { transform: translateY(400px) rotate(90deg); opacity: 0; }
         }
 
-        @media (max-width: 768px) {
+        /* VICTORY */
+        #victory-screen { align-items: center; }
+        #victory-screen h1 { font-family: 'Segoe UI', Roboto, sans-serif; font-size: 2.4rem; color: var(--gold); margin: 10px 0 24px; }
+
+        /* DIVIDER */
+        .divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+
+        @media (max-width: 680px) {
+            #game-container { padding: 1.5rem; }
             .quiz-wrapper { flex-direction: column; }
-            #game-container { max-width: 500px; padding: 1.5rem; }
+            .options-grid { grid-template-columns: 1fr; }
+            .creator-actions { flex-direction: column; }
         }
     </style>
 </head>
@@ -149,185 +227,329 @@
 <audio id="bg-music" loop><source src="dep.mp3" type="audio/mpeg"></audio>
 
 <div id="game-container">
+
+    <!-- MENU -->
     <div id="menu-screen" class="screen active-screen">
-        <div class="title-group">
-            <div class="bell">🔔</div>
-            <h1>Rung Chuông Vàng</h1>
-            <h2>Sinh hoạt dưới cờ - 9A2,1,3</h2>
-        </div>
-        <button class="btn" onclick="startGame()">BẮT ĐẦU CHƠI</button>
-        <button class="btn" onclick="switchScreen('settings-screen')">CÀI ĐẶT</button>
-        <button class="btn" onclick="switchScreen('credits-screen')">THÔNG TIN</button>
+        <div class="bell-wrap"><div class="bell">🔔</div></div>
+        <div class="title-main">RUNG CHUÔNG VÀNG</div>
+        <div class="title-sub">Sinh hoạt dưới cờ – 9A2, 1, 3</div>
+        <button class="btn" onclick="startGame(defaultQuestions)">▶ BẮT ĐẦU CHƠI</button>
+        <button class="btn" onclick="switchScreen('creator-screen')">🛠 TẠO TRÒ CHƠI</button>
+        <button class="btn" onclick="switchScreen('settings-screen')">⚙ CÀI ĐẶT</button>
+        <button class="btn" onclick="switchScreen('credits-screen')">ℹ THÔNG TIN</button>
     </div>
 
+    <!-- SETTINGS -->
     <div id="settings-screen" class="screen">
-        <h1>Cài Đặt</h1>
-        <p>Âm thanh: Đã sẵn sàng</p>
-        <button class="btn" onclick="switchScreen('menu-screen')">QUAY LẠI</button>
+        <h1 style="font-family:'Segoe UI', Roboto, sans-serif; color:var(--gold);margin-bottom:20px">Cài Đặt</h1>
+        <p style="color:var(--muted);margin-bottom:24px">Âm thanh nền: Tự động phát khi bắt đầu.</p>
+        <button class="btn" onclick="switchScreen('menu-screen')">← QUAY LẠI</button>
     </div>
 
+    <!-- CREDITS -->
     <div id="credits-screen" class="screen">
-        <h1>Thông Tin</h1>
-        <p>Phát triển bởi: HPK & CMD34</p>
-        <button class="btn2" style="border-color:#ff00ff; color: var(--primary-gold)" onclick="window.open('https://www.youtube.com/watch?v=l3JdTYIHn-o&t=44s')">🎁 BÍ MẬT</button>
-        <button class="btn" onclick="switchScreen('menu-screen')">QUAY LẠI</button>
+        <h1 style="font-family:'Segoe UI', Roboto, sans-serif; color:var(--gold);margin-bottom:16px">Thông Tin</h1>
+        <p style="color:var(--muted);margin-bottom:24px">Phát triển bởi: <strong style="color:#fff">HPK & CMD34</strong></p>
+        <button class="btn-sigma" onclick="window.open('https://www.youtube.com/watch?v=l3JdTYIHn-o&t=44s')">🎁 BÍ MẬT</button>
+        <button class="btn" onclick="switchScreen('menu-screen')">← QUAY LẠI</button>
     </div>
 
+    <!-- CREATOR SCREEN -->
+    <div id="creator-screen" class="screen">
+        <div class="creator-header">
+            <h1>🛠 Tạo Trò Chơi</h1>
+            <button class="btn-ghost" style="width:auto;padding:8px 18px" onclick="switchScreen('menu-screen')">← Quay lại</button>
+        </div>
+
+        <details class="format-guide">
+            <summary>📋 Hướng dẫn nhập JSON nhanh</summary>
+            <p style="margin-top:8px">Dán JSON theo định dạng bên dưới vào ô phía trên, rồi nhấn <strong>Nhập JSON</strong>:</p>
+            <pre>[
+  {
+    "q": "Câu hỏi của bạn?",
+    "img": "https://url-hinh-anh.jpg",
+    "options": ["Đáp án A", "Đáp án B", "Đáp án C", "Đáp án D"],
+    "correct": 0
+  }
+]</pre>
+            <p style="margin-top:6px"><code style="color:var(--gold)">correct</code>: chỉ số đáp án đúng (0 = A, 1 = B, …) hoặc <code style="color:var(--gold)">"ALWAYS_TRUE"</code> nếu mọi đáp án đều đúng.</p>
+        </details>
+
+        <div class="import-bar">
+            <input type="text" id="json-input" placeholder='Dán JSON câu hỏi vào đây rồi nhấn "Nhập JSON" →' />
+            <button onclick="importJSON()">Nhập JSON</button>
+        </div>
+
+        <div id="questions-list"></div>
+
+        <div class="creator-actions">
+            <button class="btn" style="margin-bottom:0" onclick="addQuestionCard()">＋ Thêm câu hỏi</button>
+            <button class="btn-success" onclick="launchCustomGame()">🚀 Bắt đầu với bộ này</button>
+        </div>
+    </div>
+
+    <!-- QUIZ -->
     <div id="quiz-part" class="screen">
-        <div id="question-counter" style="color: var(--primary-gold); text-align: left; font-weight: bold; margin-bottom: 10px;">Câu hỏi 1/4</div>
-        <div class="quiz-wrapper" id="quiz-wrapper" style="display: flex;">
-            <div class="image-side">
-                <img id="q-image" src="https://via.placeholder.com/400x225" alt="Quiz">
-            </div>
+        <div id="question-counter">CÂU HỎI 1/1</div>
+        <div class="quiz-wrapper">
+            <div class="image-side"><img id="q-image" src="" alt="Quiz"></div>
             <div class="question-side">
-                <div id="question-text">Câu hỏi đang tải...</div>
+                <div id="question-text">Đang tải...</div>
                 <div id="options-container"></div>
             </div>
         </div>
     </div>
 
+    <!-- VICTORY -->
     <div id="victory-screen" class="screen">
-        <div class="bell ring-anim" style="font-size: 100px;">🔔</div>
-        <h1 style="color:var(--primary-gold)">CHIẾN THẮNG!</h1>
-        <button class="btn" onclick="location.reload()">CHƠI LẠI</button>
+        <div class="bell ring-anim" style="font-size:96px">🔔</div>
+        <h1>CHIẾN THẮNG!</h1>
+        <button class="btn" onclick="location.reload()">🔄 CHƠI LẠI</button>
     </div>
 
+    <!-- BREAK EFFECT OVERLAY -->
     <div id="effect-overlay">
-        <div id="overlay-bell" style="font-size: 120px;">🔔</div>
+        <div id="overlay-bell" style="font-size:120px">🔔</div>
     </div>
-</div>
+
+</div><!-- #game-container -->
 
 <script>
-    const questions = [
-        {
-            q: "Đâu là hoạt động vì cộng đồng?",
-            img: "https://images.unsplash.com/photo-1555921015-5532091f6026?w=500",
-            options: ["A. Lễ hội quê hương.", "B. Thiện nguyện.", "Lễ tình nhân", "D. Biểu diễn văn nghệ."],
-            correct: 1
-        },
-        {
-            q: "Những hành vi giao tiếp, ứng xử không có văn hóa khi tham gia các hoạt động trong cộng đồng là",
-            img: "https://static0.srcdn.com/wordpress/wp-content/uploads/2023/01/griffith-on-the-cover-of-berserk-the-golden-age-movie-three-the-advent.jpg?w=1200&h=675&fit=crop",
-            options: ["A. Nhẹ nhàng, ân cần, hỗ trợ.", "B. Xếp hàng khi sử dụng các dịch vụ công cộng.", "C. Nói lời cảm ơn khi được giúp đỡ, xin lỗi khi làm phiền tới người khác", "D. Bật nhạc to để mọi người cùng nghe và hưởng ứng nơi công cộng."],
-            correct: 3
-        },
-        {
-            q: "Yếu tố nào sau đây là rào cản lớn đối với sự phát triển mạng lưới quan hệ cộng đồng? ",
-            img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500",
-            options: ["A. Thiếu sự tin tưởng giữa các thành viên", "B. Chính quyền địa phương hỗ trợ cộng đồng.", "C. Nhiều hoạt động kết nối được tổ chức.", "D. Tinh thần hợp tác giữa các cá nhân cao."],
-            correct: 0
-        },
-        {
-            q: "Hoạt động nào giúp tăng cường mạng lưới quan hệ cộng đồng? ",
-            img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500",
-            options: ["A. Các buổi họp tổ dân phố.", "B. Các sự kiện từ thiện, tình nguyện.", "C. Các chương trình giao lưu văn hóa, thể thao.", "D.Tổ chức hội thảo và sự kiện vì cộng đồng."],
-            correct: "ALWAYS_TRUE"
-        },
-        {
-            q: "Mạng lưới quan hệ cộng đồng ở địa phương là gì? ",
-            img: "https://kinhmatkavi.vn/wp-content/uploads/2025/01/5-buoc-xay-dung-networking-moi-quan-he-tot-hieu-qua.webp",
-            options: ["Các mối quan hệ giữa các cá nhân trong cùng một gia đình.", " Các tổ chức, cá nhân trong cùng một địa phương có sự liên kết, hỗ trợ lẫn nhau.", " Hệ thống giao thông và cơ sở hạ tầng trong khu vực.", " Các nhóm bạn thân cùng sinh sống trong một khu vực."],
-            correct: 1
-        },
-        {
-            q: "Truyền thống quê hương là những giá trị tốt đẹp, riêng biệt của mỗi vùng miền, địa phương, được hình thành và khẳng định qua",
-            img: "https://cdn.thuvienphapluat.vn/uploads/laodongtienluong/20230301/PDP/hinh-anh-2757.jpg",
-            options: ["A. Lối sống", " B. Định kiến", " C. Thời gian.", " D. Quan niệm."],
-            correct: 2
-        },
-        {
-            q: "Đâu là hành vi có văn hóa khi tham gia hoạt động cộng đồng?",
-            img: "https://tiengviethuchanh.wordpress.com/wp-content/uploads/2018/10/h3.jpg",
-            options: ["A. Lễ phép với người lớn.", " B. Làm ồn nơi cộng cộng.", "C. Mặc trang phục không phù hợp.", " D. Chém người xong chạy"],
-            correct: 0
-        },
-        {
-            q:"Yếu tố nào ảnh hưởng lớn nhất đến sự phát triển của mạng lưới quan hệ cộng đồng? ",
-            img: " https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlSTb_tmEzBAhKPwGZlD40YjsWuOzxt4TksA&s",
-            options: [ "A. Điều kiện kinh tế của khu vực.","B. Trình độ học vấn của người dân.","C. Mức độ gắn kết, tương tác giữa các cá nhân và tổ chức.","D. Chính sách phát triển của nhà nước."],
-            correct: 2,
-        },
-    ];
-
-    let currentQ = 0;
-    const bgMusic = document.getElementById('bg-music');
-
-    function switchScreen(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
-        document.getElementById(id).classList.add('active-screen');
+/* ===================== DEFAULT QUESTIONS ===================== */
+const defaultQuestions = [
+    {
+        q: "Đâu là hoạt động vì cộng đồng?",
+        img: "https://images.unsplash.com/photo-1555921015-5532091f6026?w=500",
+        options: ["A. Lễ hội quê hương.", "B. Thiện nguyện.", "C. Lễ tình nhân.", "D. Biểu diễn văn nghệ."],
+        correct: 1
+    },
+    {
+        q: "Những hành vi giao tiếp, ứng xử không có văn hóa khi tham gia các hoạt động trong cộng đồng là",
+        img: "https://static0.srcdn.com/wordpress/wp-content/uploads/2023/01/griffith-on-the-cover-of-berserk-the-golden-age-movie-three-the-advent.jpg?w=1200&h=675&fit=crop",
+        options: ["A. Nhẹ nhàng, ân cần, hỗ trợ.", "B. Xếp hàng khi sử dụng các dịch vụ công cộng.", "C. Nói lời cảm ơn khi được giúp đỡ.", "D. Bật nhạc to để mọi người cùng nghe nơi công cộng."],
+        correct: 3
+    },
+    {
+        q: "Yếu tố nào sau đây là rào cản lớn đối với sự phát triển mạng lưới quan hệ cộng đồng?",
+        img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=500",
+        options: ["A. Thiếu sự tin tưởng giữa các thành viên.", "B. Chính quyền địa phương hỗ trợ cộng đồng.", "C. Nhiều hoạt động kết nối được tổ chức.", "D. Tinh thần hợp tác giữa các cá nhân cao."],
+        correct: 0
+    },
+    {
+        q: "Hoạt động nào giúp tăng cường mạng lưới quan hệ cộng đồng?",
+        img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500",
+        options: ["A. Các buổi họp tổ dân phố.", "B. Các sự kiện từ thiện, tình nguyện.", "C. Các chương trình giao lưu văn hóa, thể thao.", "D. Tổ chức hội thảo và sự kiện vì cộng đồng."],
+        correct: "ALWAYS_TRUE"
+    },
+    {
+        q: "Mạng lưới quan hệ cộng đồng ở địa phương là gì?",
+        img: "https://kinhmatkavi.vn/wp-content/uploads/2025/01/5-buoc-xay-dung-networking-moi-quan-he-tot-hieu-qua.webp",
+        options: ["A. Các mối quan hệ giữa cá nhân trong cùng một gia đình.", "B. Các tổ chức, cá nhân trong cùng địa phương có sự liên kết, hỗ trợ lẫn nhau.", "C. Hệ thống giao thông và cơ sở hạ tầng trong khu vực.", "D. Các nhóm bạn thân cùng sinh sống trong một khu vực."],
+        correct: 1
+    },
+    {
+        q: "Truyền thống quê hương là những giá trị tốt đẹp, riêng biệt của mỗi vùng miền, địa phương, được hình thành và khẳng định qua",
+        img: "https://cdn.thuvienphapluat.vn/uploads/laodongtienluong/20230301/PDP/hinh-anh-2757.jpg",
+        options: ["A. Lối sống.", "B. Định kiến.", "C. Thời gian.", "D. Quan niệm."],
+        correct: 2
+    },
+    {
+        q: "Đâu là hành vi có văn hóa khi tham gia hoạt động cộng đồng?",
+        img: "https://tiengviethuchanh.wordpress.com/wp-content/uploads/2018/10/h3.jpg",
+        options: ["A. Lễ phép với người lớn.", "B. Làm ồn nơi công cộng.", "C. Mặc trang phục không phù hợp.", "D. Gây mất trật tự."],
+        correct: 0
+    },
+    {
+        q: "Yếu tố nào ảnh hưởng lớn nhất đến sự phát triển của mạng lưới quan hệ cộng đồng?",
+        img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlSTb_tmEzBAhKPwGZlD40YjsWuOzxt4TksA&s",
+        options: ["A. Điều kiện kinh tế của khu vực.", "B. Trình độ học vấn của người dân.", "C. Mức độ gắn kết, tương tác giữa các cá nhân và tổ chức.", "D. Chính sách phát triển của nhà nước."],
+        correct: 2
     }
+];
 
-    function startGame() {
-        bgMusic.play().catch(() => {});
-        currentQ = 0;
-        switchScreen('quiz-part');
-        loadQuestion();
+/* ===================== GAME ENGINE ===================== */
+let currentQ = 0;
+let activeQuestions = [];
+const bgMusic = document.getElementById('bg-music');
+
+function switchScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+    document.getElementById(id).classList.add('active-screen');
+}
+
+function startGame(questions) {
+    activeQuestions = questions;
+    bgMusic.play().catch(() => {});
+    currentQ = 0;
+    switchScreen('quiz-part');
+    loadQuestion();
+}
+
+function loadQuestion() {
+    const data = activeQuestions[currentQ];
+    document.getElementById("question-counter").innerText = `CÂU HỎI ${currentQ + 1} / ${activeQuestions.length}`;
+    document.getElementById("question-text").innerText = data.q;
+    document.getElementById("q-image").src = data.img || '';
+
+    const container = document.getElementById("options-container");
+    container.innerHTML = "";
+    data.options.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.className = "btn";
+        btn.innerText = opt;
+        btn.style.marginBottom = "10px";
+        btn.onclick = () => checkAnswer(i, btn);
+        container.appendChild(btn);
+    });
+}
+
+function checkAnswer(index, btn) {
+    const data = activeQuestions[currentQ];
+    const allBtns = document.querySelectorAll(".question-side .btn");
+    allBtns.forEach(b => b.classList.add('disabled'));
+
+    const isCorrect = (data.correct === "ALWAYS_TRUE" || index === data.correct);
+    if (isCorrect) {
+        btn.classList.add('correct');
+        setTimeout(nextStep, 1300);
+    } else {
+        btn.classList.add('wrong');
+        if (data.correct !== "ALWAYS_TRUE") allBtns[data.correct].classList.add('correct');
+        setTimeout(showBreakEffect, 800);
     }
+}
 
-    function loadQuestion() {
-        const data = questions[currentQ];
-        document.getElementById("question-counter").innerText = `CÂU HỎI ${currentQ + 1}/${questions.length}`;
-        document.getElementById("question-text").innerText = data.q;
-        document.getElementById("q-image").src = data.img;
-        
-        const container = document.getElementById("options-container");
-        container.innerHTML = "";
+function showBreakEffect() {
+    const overlay = document.getElementById('effect-overlay');
+    const bell = document.getElementById('overlay-bell');
+    overlay.style.display = 'flex';
+    bell.innerText = '🔔';
+    bell.classList.remove('break-anim');
+    void bell.offsetWidth;
+    bell.classList.add('break-anim');
+    setTimeout(() => { bell.innerText = '💔'; }, 450);
+    setTimeout(() => { overlay.style.display = 'none'; nextStep(); }, 1600);
+}
 
-        data.options.forEach((opt, index) => {
-            const btn = document.createElement("button");
-            btn.className = "btn";
-            btn.innerText = opt;
-            btn.onclick = () => checkAnswer(index, btn);
-            container.appendChild(btn);
+function nextStep() {
+    currentQ++;
+    if (currentQ < activeQuestions.length) loadQuestion();
+    else switchScreen('victory-screen');
+}
+
+/* ===================== CREATOR ===================== */
+let creatorQuestions = [];
+
+function openCreator() {
+    if (creatorQuestions.length === 0) addQuestionCard();
+    switchScreen('creator-screen');
+}
+
+document.querySelector('[onclick="switchScreen(\'creator-screen\')"]').onclick = openCreator;
+
+function addQuestionCard(data = null) {
+    const idx = creatorQuestions.length;
+    const q = data || { q: '', img: '', options: ['', '', '', ''], correct: 0 };
+    creatorQuestions.push(q);
+    renderCreatorList();
+}
+
+function removeQuestion(idx) {
+    creatorQuestions.splice(idx, 1);
+    renderCreatorList();
+}
+
+function renderCreatorList() {
+    const list = document.getElementById('questions-list');
+    list.innerHTML = '';
+    creatorQuestions.forEach((q, idx) => {
+        const card = document.createElement('div');
+        card.className = 'q-card';
+        card.innerHTML = `
+            <div class="q-card-head">
+                <span class="q-num">Câu ${idx + 1}</span>
+                <button class="btn-danger" onclick="removeQuestion(${idx})">✕ Xóa</button>
+            </div>
+
+            <div class="field-group">
+                <label>Nội dung câu hỏi</label>
+                <textarea rows="2" placeholder="Nhập câu hỏi..." onchange="creatorQuestions[${idx}].q=this.value">${q.q}</textarea>
+            </div>
+
+            <div class="field-group">
+                <label>URL Hình ảnh</label>
+                <div class="img-preview">
+                    <div class="img-preview-box" id="preview-${idx}">
+                        ${q.img ? `<img src="${q.img}" onerror="this.parentElement.innerHTML='<span>Lỗi</span>'">` : '<span>Chưa có</span>'}
+                    </div>
+                    <input type="text" placeholder="https://..." value="${q.img}"
+                        oninput="creatorQuestions[${idx}].img=this.value; updateImgPreview(${idx}, this.value)">
+                </div>
+            </div>
+
+            <div class="field-group">
+                <label>Đáp án (chọn ô tròn = đáp án đúng)</label>
+                <div class="options-grid">
+                    ${['A','B','C','D'].map((lbl, oi) => `
+                        <div class="option-row">
+                            <input type="radio" name="correct-${idx}" value="${oi}"
+                                ${q.correct === oi ? 'checked' : ''}
+                                onchange="creatorQuestions[${idx}].correct=parseInt(this.value)">
+                            <span class="option-label">${lbl}.</span>
+                            <input type="text" placeholder="Đáp án ${lbl}" value="${q.options[oi] || ''}"
+                                oninput="creatorQuestions[${idx}].options[${oi}]=this.value">
+                        </div>
+                    `).join('')}
+                </div>
+                <div style="margin-top:10px;display:flex;align-items:center;gap:8px">
+                    <input type="checkbox" id="always-${idx}" ${q.correct==='ALWAYS_TRUE'?'checked':''}
+                        onchange="creatorQuestions[${idx}].correct=this.checked?'ALWAYS_TRUE':0; renderCreatorList()">
+                    <label for="always-${idx}" style="font-size:.85rem;color:var(--muted);cursor:pointer">Tất cả đáp án đều đúng (ALWAYS_TRUE)</label>
+                </div>
+            </div>
+        `;
+        list.appendChild(card);
+    });
+}
+
+function updateImgPreview(idx, url) {
+    const box = document.getElementById(`preview-${idx}`);
+    if (!box) return;
+    box.innerHTML = url ? `<img src="${url}" onerror="this.parentElement.innerHTML='<span>Lỗi</span>'">` : '<span>Chưa có</span>';
+}
+
+function importJSON() {
+    const raw = document.getElementById('json-input').value.trim();
+    if (!raw) return alert('Vui lòng dán JSON vào ô trước!');
+    try {
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) throw new Error('JSON phải là mảng []');
+        parsed.forEach(item => {
+            if (!item.q || !Array.isArray(item.options)) throw new Error('Thiếu trường q hoặc options');
         });
+        creatorQuestions = parsed.map(item => ({
+            q: item.q || '',
+            img: item.img || '',
+            options: (item.options || ['','','','']).slice(0, 4),
+            correct: item.correct !== undefined ? item.correct : 0
+        }));
+        renderCreatorList();
+        document.getElementById('json-input').value = '';
+        alert(`✅ Đã nhập ${creatorQuestions.length} câu hỏi!`);
+    } catch(e) {
+        alert('❌ JSON không hợp lệ: ' + e.message);
     }
+}
 
-    function checkAnswer(index, btn) {
-        const data = questions[currentQ];
-        const allBtns = document.querySelectorAll(".question-side .btn");
-        allBtns.forEach(b => b.classList.add('disabled'));
+function launchCustomGame() {
+    if (creatorQuestions.length === 0) return alert('Hãy thêm ít nhất 1 câu hỏi!');
+    const invalid = creatorQuestions.find((q, i) => !q.q.trim());
+    if (invalid) return alert('Có câu hỏi chưa có nội dung, vui lòng điền đầy đủ!');
+    startGame(creatorQuestions);
+}
 
-        const isCorrect = (data.correct === "ALWAYS_TRUE" || index === data.correct);
-
-        if (isCorrect) {
-            btn.classList.add('correct');
-            setTimeout(nextStep, 1200);
-        } else {
-            btn.classList.add('wrong');
-            if (data.correct !== "ALWAYS_TRUE") allBtns[data.correct].classList.add('correct');
-            
-            setTimeout(() => {
-                showBreakEffect();
-            }, 800);
-        }
-    }
-
-    function showBreakEffect() {
-        const overlay = document.getElementById('effect-overlay');
-        const bell = document.getElementById('overlay-bell');
-        overlay.style.display = 'flex';
-        bell.innerText = '🔔';
-        bell.classList.remove('break-anim');
-        void bell.offsetWidth; 
-        bell.classList.add('break-anim');
-
-        setTimeout(() => { bell.innerText = '💔'; }, 450);
-
-        setTimeout(() => {
-            overlay.style.display = 'none';
-            nextStep();
-        }, 1500);
-    }
-
-    function nextStep() {
-        currentQ++;
-        if (currentQ < questions.length) {
-            loadQuestion();
-        } else {
-            switchScreen('victory-screen');
-        }
-    }
+/* Init creator with one blank card */
+addQuestionCard();
 </script>
-
 </body>
 </html>
